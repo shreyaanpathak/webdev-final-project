@@ -3,8 +3,6 @@ import Home from './Home'
 import Account from './Account'
 import Dashboard from './Dashboard'
 import Navbar from "./Home/Navbar"
-
-import DefaultNavigation from './DefaultNavigation'
 import CustomCursor from './Home/CustomCursor'
 
 
@@ -16,7 +14,7 @@ function App() {
       <Navbar/>
       <HashRouter >
         <Routes>
-          <Route path="/" element={<DefaultNavigation />} />
+          <Route path="/" element={<Account />} />
           <Route path="/Home" element={<Home />} />
           <Route path="/Account/*" element={<Account />} />
           <Route path="/Dashboard" element={<Dashboard />} />
