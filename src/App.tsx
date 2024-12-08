@@ -10,19 +10,18 @@ import FloatingParticles from './Home/FloatingParticles'
 function App() {
 
   return (
-    <span className="w-screen h-screen" data-theme="luxury">
+    <div className="w-screen h-screen" data-theme="luxury">
       <HashRouter >
       <FloatingParticles/>
       <CustomCursor/>
       <Navbar/>
         <Routes>
-          <Route path="/" element={<Account />} />
-          <Route path="/Home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/Account/*" element={<Account />} />
           <Route path="/Dashboard" element={<Dashboard />} />
         </Routes>
       </HashRouter>
-    </span>
+    </div>
 
   )
 }
