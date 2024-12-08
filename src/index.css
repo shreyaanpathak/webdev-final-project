@@ -17,6 +17,12 @@ html {
   margin: 0;
   padding: 0;
   height: 100%;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
@@ -24,14 +30,18 @@ body {
   padding: 0;
   height: 100%;
   background-color: #000;
-  /* Remove overflow-x: hidden from body to allow progress bar to work */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
-/* Add a wrapper class for your main content */
+body::-webkit-scrollbar {
+  display: none;
+}
+
 .page-wrapper {
-  overflow-x: hidden;
   width: 100%;
   position: relative;
+  min-height: 100vh;
 }
 
 .animate-slideDown {
@@ -67,13 +77,6 @@ body {
   border: 2px solid rgba(255,255,255,0.5);
 }
 
-.page-wrapper {
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
-  min-height: 100vh; /* Ensure there's enough content to scroll */
-}
-
 /* Ensure the progress bar stays on top */
 .motion-div-progress {
   position: fixed;
@@ -82,4 +85,25 @@ body {
   right: 0;
   z-index: 9999;
   transform-origin: 0%;
+}
+
+/* Add this to ensure containers don't overflow */
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Add this to ensure grid items don't cause overflow */
+.grid {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Make sure fixed elements don't cause overflow */
+.fixed {
+  max-width: 100vw;
 }

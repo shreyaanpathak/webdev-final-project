@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { Parallax } from 'react-parallax';
 
 export default function Home() {
     const containerVariants = {
@@ -53,14 +54,14 @@ export default function Home() {
     const opacityProgress = useTransform(scrollYProgress, [0, 1], [1, 0.3]);
 
     return (
-        <main className="w-full">
+        <main className="w-full overflow-x-hidden">
             <div className="page-wrapper">
                 <div className="relative bg-[#0a0a0a]">
                     <motion.div
                         className="fixed top-0 left-0 right-0 h-[6px] bg-gradient-to-r from-green-600 to-yellow-500 origin-left z-50"
                         style={{ scaleX: scrollYProgress }}
                     />
-
+    
                     <motion.div
                         style={{
                             opacity: opacityProgress,
@@ -75,129 +76,144 @@ export default function Home() {
                         }}
                         className="fixed bottom-40 left-20 w-96 h-96 bg-yellow-500/20 rounded-full blur-3xl"
                     />
-
-                    {/* Hero Section */}
-                    <div className="min-h-screen flex items-center justify-center relative">
-                        <motion.div
-                            className="text-center px-6 relative z-10"
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                                duration: 1,
-                                type: "spring",
-                                stiffness: 100
-                            }}
-                        >
-                            <div className="max-w-4xl mx-auto">
-                                <motion.h1
-                                    className="text-8xl font-bold mb-8 leading-tight"
-                                    initial={{ scale: 0.95 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    <motion.span
-                                        className="text-green-500 inline-block"
-                                        whileHover={{ scale: 1.05 }}
+    
+                    {/* Hero Section with Parallax */}
+                    <Parallax
+                        blur={0}
+                        bgImageAlt="hero background"
+                        strength={200}
+                        className="relative"
+                    >
+                        <div className="min-h-screen flex items-center justify-center relative">
+                            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+                            <motion.div
+                                className="text-center px-6 relative z-10"
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                    duration: 1,
+                                    type: "spring",
+                                    stiffness: 100
+                                }}
+                            >
+                                <div className="max-w-4xl mx-auto">
+                                    <motion.h1
+                                        className="text-8xl font-bold mb-8 leading-tight"
+                                        initial={{ scale: 0.95 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ duration: 0.5 }}
                                     >
-                                        Financial
-                                    </motion.span>{' '}
-                                    <motion.span
-                                        className="text-yellow-500 inline-block"
-                                        whileHover={{ scale: 1.05 }}
-                                    >
-                                        Intelligence
-                                    </motion.span>{' '}
-                                    <motion.span
-                                        className="text-white inline-block"
-                                        whileHover={{ scale: 1.05 }}
-                                    >
-                                        Hub
-                                    </motion.span>
-                                </motion.h1>
-                                <motion.p
-                                    className="text-2xl text-gray-400 mb-12"
-                                    variants={fadeInUp}
-                                    initial="hidden"
-                                    animate="visible"
-                                >
-                                    Empower your financial future with AI-driven insights, real-time portfolio tracking,
-                                    and expert analysis. Join thousands of investors making smarter decisions with our
-                                    cutting-edge platform.
-                                </motion.p>
-                                <div className="flex justify-center gap-6">
-                                    <Link to="/Account/Signup">
-                                        <motion.button
+                                        <motion.span
+                                            className="text-green-500 inline-block"
                                             whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="btn btn-lg bg-green-600 hover:bg-green-700 text-white border-0 px-8"
                                         >
-                                            Get Started
-                                        </motion.button>
-                                    </Link>
-                                    <Link to="/dashboard">
-                                        <motion.button
+                                            Financial
+                                        </motion.span>{' '}
+                                        <motion.span
+                                            className="text-yellow-500 inline-block"
                                             whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="btn btn-lg btn-outline text-yellow-500 hover:bg-yellow-500 hover:text-base-100 px-8"
                                         >
-                                            Explore Dashboard
-                                        </motion.button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
-
-                    {/* Features Section */}
-                    <section className="py-20 px-6 relative">
-                        <motion.div
-                            variants={containerVariants}
-                            initial="hidden"
-                            whileInView="show"
-                            viewport={{ once: true }}
-                            className="container mx-auto relative z-10"
-                        >
-                            <motion.h2 variants={itemVariants} className="text-5xl font-bold text-center mb-16">
-                                <span className="text-green-500">Powerful</span> Features
-                            </motion.h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {features.map((feature, index) => (
-                                    <motion.div
-                                        key={index}
-                                        variants={itemVariants}
-                                        whileHover={{
-                                            scale: 1.05,
-                                            transition: { type: "spring", stiffness: 300 }
-                                        }}
-                                        className="card bg-black/30 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
+                                            Intelligence
+                                        </motion.span>{' '}
+                                        <motion.span
+                                            className="text-white inline-block"
+                                            whileHover={{ scale: 1.05 }}
+                                        >
+                                            Hub
+                                        </motion.span>
+                                    </motion.h1>
+                                    <motion.p
+                                        className="text-2xl text-gray-400 mb-12"
+                                        variants={fadeInUp}
+                                        initial="hidden"
+                                        animate="visible"
                                     >
-                                        <div className="card-body">
-                                            <motion.div
-                                                className="text-green-500 mb-4"
-                                                whileHover={{ rotate: 360 }}
-                                                transition={{ duration: 0.6 }}
+                                        Empower your financial future with AI-driven insights, real-time portfolio tracking,
+                                        and expert analysis. Join thousands of investors making smarter decisions with our
+                                        cutting-edge platform.
+                                    </motion.p>
+                                    <div className="flex justify-center gap-6">
+                                        <Link to="/Account/Signup">
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                className="btn btn-lg bg-green-600 hover:bg-green-700 text-white border-0 px-8"
                                             >
-                                                {feature.icon}
-                                            </motion.div>
-                                            <h2 className="card-title text-white text-2xl">{feature.title}</h2>
-                                            <p className="text-gray-400">{feature.description}</p>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </motion.div>
-                    </section>
-
+                                                Get Started
+                                            </motion.button>
+                                        </Link>
+                                        <Link to="/dashboard">
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                className="btn btn-lg btn-outline text-yellow-500 hover:bg-yellow-500 hover:text-base-100 px-8"
+                                            >
+                                                Explore Dashboard
+                                            </motion.button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+                    </Parallax>
+    
+                    {/* Features Section with Parallax */}
+                    <Parallax
+                        blur={0}
+                        strength={300}
+                        className="relative"
+                    >
+                        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                        <section className="py-20 px-6 relative">
+                            <motion.div
+                                variants={containerVariants}
+                                initial="hidden"
+                                whileInView="show"
+                                viewport={{ once: true }}
+                                className="container mx-auto relative z-10"
+                            >
+                                <motion.h2 variants={itemVariants} className="text-5xl font-bold text-center mb-16">
+                                    <span className="text-green-500">Powerful</span> Features
+                                </motion.h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {features.map((feature, index) => (
+                                        <motion.div
+                                            key={index}
+                                            variants={itemVariants}
+                                            whileHover={{
+                                                scale: 1.05,
+                                                transition: { type: "spring", stiffness: 300 }
+                                            }}
+                                            className="card bg-black/30 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
+                                        >
+                                            <div className="card-body">
+                                                <motion.div
+                                                    className="text-green-500 mb-4"
+                                                    whileHover={{ rotate: 360 }}
+                                                    transition={{ duration: 0.6 }}
+                                                >
+                                                    {feature.icon}
+                                                </motion.div>
+                                                <h2 className="card-title text-white text-2xl">{feature.title}</h2>
+                                                <p className="text-gray-400">{feature.description}</p>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        </section>
+                    </Parallax>
+    
                     {/* Stats Section */}
-                    <section className="py-20 px-6 relative">
+                    <section className="py-20 px-6 relative bg-gradient-to-b from-[#0a0a0a] to-[#1a1a1a]">
                         <motion.div
-                            className="container mx-auto relative z-10"
+                            className="container mx-auto relative z-10 max-w-[95%]"
                             variants={containerVariants}
                             initial="hidden"
                             whileInView="show"
                             viewport={{ once: true }}
                         >
-                            <div className="stats stats-vertical lg:stats-horizontal shadow w-full bg-black/30 text-white">
+                            <div className="stats stats-vertical lg:stats-horizontal shadow w-full bg-black/30 backdrop-blur-lg text-white">
                                 {stats.map((stat, index) => (
                                     <motion.div
                                         className="stat"
