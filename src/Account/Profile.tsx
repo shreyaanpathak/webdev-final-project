@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   FaChartLine,
   FaBriefcase,
@@ -29,27 +29,6 @@ const MotionStats = ({ children }) => (
   </motion.div>
 );
 
-const SkillBar = ({ name, level }) => (
-  <motion.div
-    className="mb-4"
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <div className="flex justify-between mb-1">
-      <span className="text-green-500">{name}</span>
-      <span className="text-yellow-500">{level}%</span>
-    </div>
-    <div className="h-2 bg-black/40 rounded-full overflow-hidden">
-      <motion.div
-        className="h-full bg-gradient-to-r from-green-500 to-yellow-500"
-        initial={{ width: 0 }}
-        animate={{ width: `${level}%` }}
-        transition={{ duration: 1, ease: "easeOut" }}
-      />
-    </div>
-  </motion.div>
-);
 
 const FloatingParticles = () => {
   return (
