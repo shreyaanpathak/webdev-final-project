@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { RiMoneyDollarCircleFill } from "react-icons/ri";
 
 export default function Navbar() {
   return (
@@ -6,9 +7,7 @@ export default function Navbar() {
     <nav className="navbar bg-base-100 px-6 md:px-10 h-20 shadow-sm">
       <div className="flex-1">
         <a href="/" className="btn btn-ghost text-2xl font-bold hover:text-green-500 transition-colors duration-300 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4m12 4l-4-4m4 4l-4-4"/>
-          </svg>
+          <RiMoneyDollarCircleFill/>
           <div className="[&>*]:inline-block">
             <span className="text-green-600">Fin</span><span className="text-yellow-500">Hub</span>
           </div>
