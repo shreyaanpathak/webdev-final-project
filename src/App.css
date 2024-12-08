@@ -40,3 +40,9 @@
 .read-the-docs {
   color: #888;
 }
+
+body {
+  background-color: rgb(27, 34, 43);
+  margin: 0; /* Optional: Remove margin for full coverage */
+  height: 100%;
+}
