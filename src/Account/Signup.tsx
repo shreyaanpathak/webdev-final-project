@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { PiWaveSineFill } from "react-icons/pi";
+import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { Link } from 'react-router-dom';
 
 export default function SignUp() {
@@ -51,7 +51,7 @@ export default function SignUp() {
                         className="flex justify-center"
                     >
                         <div className="p-3 rounded-full bg-green-600/10">
-                            <PiWaveSineFill className="text-6xl text-green-600" />
+                            <RiMoneyDollarCircleFill className="text-6xl text-green-600" />
                         </div>
                     </motion.div>
 

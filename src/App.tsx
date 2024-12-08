@@ -5,6 +5,7 @@ import Dashboard from './Dashboard'
 import Navbar from "./Home/Navbar"
 import CustomCursor from './Home/CustomCursor'
 import FloatingParticles from './Home/FloatingParticles'
+import Stocks from "./Stocks/index"
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/Account/*" element={<Account />} />
           <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/Stocks" element= {<Stocks/>}/>
         </Routes>
       </HashRouter>
     </div>

@@ -174,7 +174,6 @@ export default function Home() {
                                         <div className="card-body">
                                             <motion.div
                                                 className="text-green-500 mb-4"
-                                                whileHover={{ rotate: 360 }}
                                                 transition={{ duration: 0.6 }}
                                             >
                                                 {feature.icon}
