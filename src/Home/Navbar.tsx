@@ -1,22 +1,23 @@
 export default function Navbar() {
   return (
+    <>
     <nav className="navbar bg-base-100 px-6 md:px-10 h-20 shadow-sm">
       <div className="flex-1">
-      <a href="/" className="btn btn-ghost text-2xl font-bold hover:text-green-500 transition-colors duration-300 flex items-center gap-2">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4m12 4l-4-4m4 4l-4-4"/>
-  </svg>
-  <div className="[&>*]:inline-block">
-    <span className="text-green-600">Fin</span><span className="text-yellow-500">Hub</span>
-  </div>
-</a>
+        <a href="/" className="btn btn-ghost text-2xl font-bold hover:text-green-500 transition-colors duration-300 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4m12 4l-4-4m4 4l-4-4"/>
+          </svg>
+          <div className="[&>*]:inline-block">
+            <span className="text-green-600">Fin</span><span className="text-yellow-500">Hub</span>
+          </div>
+        </a>
       </div>
 
       <div className="flex items-center gap-6">
         <ul className="menu menu-horizontal gap-4">
           <li>
-            <a
-              href="/dashboard"
+            <button
+              onClick={() => window.location.href = '/dashboard'}
               className="text-lg font-bold px-6 py-3 transition-all duration-300 
               text-green-600 hover:text-yellow-500
               relative after:absolute after:bottom-0 after:left-0 after:h-0.5 
@@ -39,11 +40,11 @@ export default function Navbar() {
                 />
               </svg>
               Dashboard
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="/stocks"
+            <button
+              onClick={() => window.location.href = '/stocks'}
               className="text-lg font-bold px-6 py-3 transition-all duration-300 
               text-green-600 hover:text-yellow-500
               relative after:absolute after:bottom-0 after:left-0 after:h-0.5 
@@ -66,7 +67,7 @@ export default function Navbar() {
                 />
               </svg>
               Stocks
-            </a>
+            </button>
           </li>
         </ul>
 
@@ -89,12 +90,12 @@ export default function Navbar() {
           <ul
             tabIndex={0}
             className="dropdown-content menu shadow-xl bg-base-100 rounded-box w-23
-    absolute right-0 -mr-6 md:-mr-10 mt-3 overflow-hidden" // Negative margin matching your nav padding
+            absolute right-0 -mr-6 md:-mr-10 mt-3 overflow-hidden"
           >
             <li className="w-full">
-              <a
-                href="/profile"
-                className="flex justify-center items-center gap-2 p-3 text-lg font-bold text-green-600 hover:text-yellow-500 hover:bg-base-200"
+              <button
+                onClick={() => window.location.href = '/profile'}
+                className="flex justify-center items-center gap-2 p-3 text-lg font-bold text-green-600 hover:text-yellow-500 hover:bg-base-200 w-full"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -111,12 +112,12 @@ export default function Navbar() {
                   />
                 </svg>
                 Profile
-              </a>
+              </button>
             </li>
             <li className="w-full">
-              <a
-                href="/logout"
-                className="flex justify-center items-center gap-2 p-3 text-lg font-bold text-error hover:text-red-400 hover:bg-base-200"
+              <button
+                onClick={() => window.location.href = '/logout'}
+                className="flex justify-center items-center gap-2 p-3 text-lg font-bold text-error hover:text-red-400 hover:bg-base-200 w-full"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -133,11 +134,12 @@ export default function Navbar() {
                   />
                 </svg>
                 Logout
-              </a>
+              </button>
             </li>
           </ul>
         </div>
       </div>
     </nav>
+    </>
   );
 }
