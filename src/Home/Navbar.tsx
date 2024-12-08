@@ -1,84 +1,67 @@
 export default function Navbar() {
   return (
-    <div>
-      <div className="navbar bg-base-100">
-        <div className="navbar-start">
-          <div className="dropdown">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h7"
-                />
-              </svg>
-            </div>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-            >
-              <li>
-                <a>Homepage</a>
-              </li>
-              <li>
-                <a>Portfolio</a>
-              </li>
-              <li>
-                <a>About</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="navbar-center">
-          <a className="btn btn-ghost text-xl">daisyUI</a>
-        </div>
-        <div className="navbar-end">
-          <button className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+    <div className="navbar bg-base-100 px-6 md:px-10 h-20 shadow-sm">
+      <div className="flex-1">
+        <a className="btn btn-ghost text-2xl font-bold hover:text-green-500 transition-colors duration-300">
+          <span className="text-green-600">Fin</span>
+          <span className="text-yellow-500">Hub</span>
+        </a>
+      </div>
+
+      <div className="flex items-center gap-6">
+        <ul className="menu menu-horizontal gap-4">
+          <li>
+            <a className="text-lg font-bold px-6 py-3 transition-all duration-300 
+              text-green-600 hover:text-yellow-500
+              relative after:absolute after:bottom-0 after:left-0 after:h-0.5 
+              after:w-0 hover:after:w-full after:bg-yellow-400 
+              after:transition-all after:duration-300">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a className="text-lg font-bold px-6 py-3 transition-all duration-300 
+              text-green-600 hover:text-yellow-500
+              relative after:absolute after:bottom-0 after:left-0 after:h-0.5 
+              after:w-0 hover:after:w-full after:bg-yellow-400 
+              after:transition-all after:duration-300">
+              Stocks
+            </a>
+          </li>
+        </ul>
+
+        <div className="dropdown dropdown-end">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-circle avatar 
+              hover:ring hover:ring-green-400 hover:ring-offset-2 
+              transition-all duration-300 transform hover:scale-105">
+            <div className="w-12 rounded-full ring-2 ring-yellow-400">
+              <img
+                alt="Profile"
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
               />
-            </svg>
-          </button>
-          <button className="btn btn-ghost btn-circle">
-            <div className="indicator">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              <span className="badge badge-xs badge-primary indicator-item"></span>
             </div>
-          </button>
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 z-[1] mt-3 w-48 p-2 
+              shadow-lg transform -translate-x-1/2 left-1/2 
+              animate-slideDown origin-top">
+            <li>
+              <a className="p-3 text-base transition-colors duration-200 text-green-600 
+                hover:text-yellow-500">
+                Profile
+              </a>
+            </li>
+            <li>
+              <a className="p-3 text-base transition-colors duration-200 text-error 
+                hover:text-red-700">
+                Logout
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
