@@ -231,7 +231,7 @@ export default function Home() {
                     </motion.div>
                 </section>
                 {/* Timeline */}
-                <section className="py-20 px-6 bg-base-800/50">
+                <section className="py-20 bg-base-800/50">
                     <motion.div
                         className="container mx-auto"
                         variants={containerVariants}
@@ -242,7 +242,7 @@ export default function Home() {
                         <motion.h2 variants={itemVariants} className="text-5xl font-bold text-center mb-16">
                             Our <span className="text-yellow-500">Journey</span>
                         </motion.h2>
-                        <ul className="timeline timeline-vertical lg:timeline-horizontal p-8">
+                        <ul className="timeline timeline-vertical lg:timeline-horizontal p-8 pl-20">
                             {timelineEvents.map((event, index) => (
                                 <li key={index} className="relative">
                                     <motion.div
