@@ -13,26 +13,27 @@
   }
 }
 
-/* Update the html, body rules */
 html {
   margin: 0;
   padding: 0;
   height: 100%;
-  width: 100%;
-  overflow-x: hidden; /* Add this */
 }
 
 body {
   margin: 0;
   padding: 0;
   height: 100%;
-  width: 100%;
   background-color: #000;
-  overflow-x: hidden; /* Add this */
-  position: relative; /* Add this */
+  /* Remove overflow-x: hidden from body to allow progress bar to work */
 }
 
-/* Rest of your CSS remains the same */
+/* Add a wrapper class for your main content */
+.page-wrapper {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 .animate-slideDown {
   animation: slideDown 0.2s ease-out;
 }
@@ -64,4 +65,21 @@ body {
   width: 25px;
   height: 25px;
   border: 2px solid rgba(255,255,255,0.5);
+}
+
+.page-wrapper {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+  min-height: 100vh; /* Ensure there's enough content to scroll */
+}
+
+/* Ensure the progress bar stays on top */
+.motion-div-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  transform-origin: 0%;
 }
