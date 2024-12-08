@@ -1,51 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-const CustomCursor = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
+const CustomCursor: React.FC = () => {
+  const dotRef = useRef<HTMLDivElement>(null);
+  const outlineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const updateCursorPosition = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+    const moveCursor = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      
+      requestAnimationFrame(() => {
+        if (dotRef.current && outlineRef.current) {
+          dotRef.current.style.left = `${clientX}px`;
+          dotRef.current.style.top = `${clientY}px`;
+          outlineRef.current.style.left = `${clientX}px`;
+          outlineRef.current.style.top = `${clientY}px`;
+        }
+      });
     };
 
-    const handleMouseOver = (e) => {
-      if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
-        setIsHovering(true);
-      }
-    };
-
-    const handleMouseOut = () => {
-      setIsHovering(false);
-    };
-
-    window.addEventListener('mousemove', updateCursorPosition);
-    document.addEventListener('mouseover', handleMouseOver);
-    document.addEventListener('mouseout', handleMouseOut);
+    document.addEventListener('mousemove', moveCursor);
 
     return () => {
-      window.removeEventListener('mousemove', updateCursorPosition);
-      document.removeEventListener('mouseover', handleMouseOver);
-      document.removeEventListener('mouseout', handleMouseOut);
+      document.removeEventListener('mousemove', moveCursor);
     };
   }, []);
 
   return (
     <>
-      <div 
-        className={`cursor-dot ${isHovering ? 'scale-150' : ''}`}
-        style={{ 
-          left: `${position.x}px`, 
-          top: `${position.y}px` 
-        }}
-      />
-      <div 
-        className={`cursor-outline ${isHovering ? 'scale-150' : ''}`}
-        style={{ 
-          left: `${position.x}px`, 
-          top: `${position.y}px` 
-        }}
-      />
+      <div ref={dotRef} className="cursor-dot" />
+      <div ref={outlineRef} className="cursor-outline" />
     </>
   );
 };

@@ -23,10 +23,15 @@ html, body {
 .animate-slideDown {
   animation: slideDown 0.2s ease-out;
 }
+
 body {
   background-color: #000;  /* or any dark color */
   margin: 0;
   padding: 0;
+}
+
+* {
+  cursor: none !important;
 }
 
 .cursor-dot,
@@ -38,7 +43,8 @@ body {
   transform: translate(-50%, -50%);
   border-radius: 50%;
   z-index: 9999;
-  transition: all 0.1s ease-out;
+  will-change: transform;
+  transition: none;
 }
 
 .cursor-dot {
