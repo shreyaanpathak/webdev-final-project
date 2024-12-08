@@ -13,20 +13,28 @@
   }
 }
 
-html, body {
+/* Update the html, body rules */
+html {
   margin: 0;
   padding: 0;
   height: 100%;
-}
-
-.animate-slideDown {
-  animation: slideDown 0.2s ease-out;
+  width: 100%;
+  overflow-x: hidden; /* Add this */
 }
 
 body {
-  background-color: #000;  /* or any dark color */
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #000;
+  overflow-x: hidden; /* Add this */
+  position: relative; /* Add this */
+}
+
+/* Rest of your CSS remains the same */
+.animate-slideDown {
+  animation: slideDown 0.2s ease-out;
 }
 
 * {
