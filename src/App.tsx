@@ -4,15 +4,17 @@ import Account from './Account'
 import Dashboard from './Dashboard'
 import Navbar from "./Home/Navbar"
 import CustomCursor from './Home/CustomCursor'
+import FloatingParticles from './Home/FloatingParticles'
 
 
 function App() {
 
   return (
     <span className="w-screen h-screen" data-theme="luxury">
+      <HashRouter >
+      <FloatingParticles/>
       <CustomCursor/>
       <Navbar/>
-      <HashRouter >
         <Routes>
           <Route path="/" element={<Account />} />
           <Route path="/Home" element={<Home />} />

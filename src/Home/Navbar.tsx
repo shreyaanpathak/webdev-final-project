@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Navbar() {
   return (
     <>
@@ -43,8 +45,8 @@ export default function Navbar() {
             </button>
           </li>
           <li>
-            <button
-              onClick={() => window.location.href = '/stocks'}
+            <Link
+              to="/stocks"
               className="text-lg font-bold px-6 py-3 transition-all duration-300 
               text-green-600 hover:text-yellow-500
               relative after:absolute after:bottom-0 after:left-0 after:h-0.5 
@@ -67,77 +69,74 @@ export default function Navbar() {
                 />
               </svg>
               Stocks
-            </button>
+            </Link>
           </li>
         </ul>
-
         <div className="dropdown dropdown-end">
-          <button
-            tabIndex={0}
-            aria-label="Open user menu"
-            aria-haspopup="true"
-            className="btn btn-ghost btn-circle avatar 
-              hover:ring hover:ring-green-400 hover:ring-offset-2 
-              transition-all duration-300 transform hover:scale-105"
-          >
-            <div className="w-12 rounded-full ring-2 ring-yellow-400">
-              <img
-                alt="User profile"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
-            </div>
-          </button>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu shadow-xl bg-base-100 rounded-box w-23
-            absolute right-0 -mr-6 md:-mr-10 mt-3 overflow-hidden"
-          >
-            <li className="w-full">
-              <button
-                onClick={() => window.location.href = '/profile'}
-                className="flex justify-center items-center gap-2 p-3 text-lg font-bold text-green-600 hover:text-yellow-500 hover:bg-base-200 w-full"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                Profile
-              </button>
-            </li>
-            <li className="w-full">
-              <button
-                onClick={() => window.location.href = '/logout'}
-                className="flex justify-center items-center gap-2 p-3 text-lg font-bold text-error hover:text-red-400 hover:bg-base-200 w-full"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-                Logout
-              </button>
-            </li>
-          </ul>
-        </div>
+  <label 
+    tabIndex={0} 
+    className="btn btn-ghost btn-circle avatar 
+      hover:ring hover:ring-green-400 hover:ring-offset-2 
+      transition-all duration-300 transform hover:scale-105"
+  >
+    <div className="w-12 rounded-full ring-2 ring-yellow-400">
+      <img
+        alt="User profile"
+        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+      />
+    </div>
+  </label>
+  
+  <ul
+    tabIndex={0}
+    className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+  >
+    <li>
+      <Link 
+        to="/Account/Profile"
+        className="flex justify-start items-center gap-2 p-3 text-lg font-bold text-green-600 hover:text-yellow-500 hover:bg-base-200"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+          />
+        </svg>
+        Profile
+      </Link>
+    </li>
+    <li>
+      <Link 
+        to="/logout"
+        className="flex justify-start items-center gap-2 p-3 text-lg font-bold text-error hover:text-red-400 hover:bg-base-200"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+          />
+        </svg>
+        Logout
+      </Link>
+    </li>
+  </ul>
+</div>
       </div>
     </nav>
     </>

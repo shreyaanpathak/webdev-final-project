@@ -29,33 +29,6 @@ const MotionStats = ({ children }) => (
   </motion.div>
 );
 
-
-const FloatingParticles = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute w-full h-full bg-[radial-gradient(circle_at_center,rgba(0,255,0,0.1)_0,rgba(0,0,0,0.8)_100%)]" />
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-2 h-2 bg-green-500/20 rounded-full"
-          animate={{
-            y: [-20, window.innerHeight],
-            x: [
-              Math.random() * window.innerWidth,
-              Math.random() * window.innerWidth,
-            ],
-          }}
-          transition={{
-            duration: Math.random() * 10 + 10,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
 const ProjectCard = ({ project }) => (
   <motion.div
     className="bg-black/40 rounded-xl p-6 border border-green-500/20 hover:border-yellow-500/50"
@@ -228,7 +201,6 @@ export default function EnhancedProfile() {
 
   return (
     <div className="relative min-h-screen bg-black">
-      <FloatingParticles />
       <motion.div
         className="relative z-10 min-h-screen p-4 lg:p-8"
         initial={{ opacity: 0 }}
