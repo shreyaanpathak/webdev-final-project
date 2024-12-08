@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PiWaveSineFill } from "react-icons/pi";
+import { Link } from 'react-router-dom';
 
 export default function Signin() {
     // Animation variants for staggered children
@@ -129,7 +130,7 @@ export default function Signin() {
                     >
                         Don't have an account? 
                         <button className="ml-1 text-green-600 hover:underline">
-                            Sign Up
+                            <Link to={"/Account/Signup"}>Sign Up</Link>
                         </button>
                     </motion.div>
                 </motion.div>
