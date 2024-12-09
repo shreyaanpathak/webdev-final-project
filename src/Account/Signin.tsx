@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { BiKey } from 'react-icons/bi';
+import * as client from './client';
+import { setCurrentUser, setError, setLoading } from './reducer';
 
 export default function Signin() {
-    // Animation variants for staggered children
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { loading, error } = useSelector((state: any) => state.accountReducer);
+    const [credentials, setCredentials] = useState({ username: "", password: "" });
+
+    const handleSignin = async () => {
+        try {
+            dispatch(setLoading(true));
+            const user = await client.signin(credentials);
+            dispatch(setCurrentUser(user));
+            navigate("/dashboard");
+        } catch (err: any) {
+            dispatch(setError(err.message));
+        }
+    };
+
+    // Animation variants
     const containerVariants = {
         hidden: { opacity: 0 },
         show: {
@@ -22,14 +42,14 @@ export default function Signin() {
     };
 
     return (
-        <div className="min-h-screen grid place-items-center overflow-hidden bg-gradient-to-br from-base-900 via-base-800 to-base-900 p-6 relative before:absolute before:inset-0 before:bg-[radial-gradient(circle_600px_at_50%_60%,rgba(34,197,94,0.08),transparent)] before:pointer-events-none">
+        <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-[#0a0a0a] via-[#111111] to-[#0a0a0a] relative">
+            {/* The before pseudo-element can still be used if you like; just ensure it doesn't cause overflow */}
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 className="relative bg-base-100 rounded-2xl shadow-2xl p-8 w-full max-w-md"
             >
-                {/* Decorative elements */}
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-green-600/10 rounded-full blur-3xl"></div>
                 <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-green-600/10 rounded-full blur-3xl"></div>
                 
@@ -79,13 +99,18 @@ export default function Signin() {
                                     </svg>
                                     <input 
                                         type="text" 
+                                        value={credentials.username}
+                                        onChange={(e) => setCredentials({ 
+                                            ...credentials, 
+                                            username: e.target.value 
+                                        })}
                                         className="grow focus:outline-none bg-transparent placeholder-base-content/50"
                                         placeholder="Username"
                                     />
                                 </motion.div>
                             </div>
                         </div>
-
+                        {}
                         <div className="form-control">
                             <div className="relative">
                                 <motion.div
@@ -106,21 +131,38 @@ export default function Signin() {
                                     </svg>
                                     <input 
                                         type="password" 
+                                        value={credentials.password}
+                                        onChange={(e) => setCredentials({ 
+                                            ...credentials, 
+                                            password: e.target.value 
+                                        })}
                                         className="grow focus:outline-none bg-transparent placeholder-base-content/50"
                                         placeholder="Password"
                                     />
                                 </motion.div>
                             </div>
                         </div>
+                        
+                        {error && (
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="text-red-500 text-sm text-center"
+                            >
+                                {error}
+                            </motion.div>
+                        )}
                     </motion.div>
 
                     <motion.div variants={itemVariants}>
                         <motion.button
+                            onClick={handleSignin}
+                            disabled={loading}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className="btn btn-lg w-full bg-green-600 hover:bg-green-700 text-base-100"
                         >
-                            Sign In
+                            {loading ? "Signing in..." : "Sign In"}
                         </motion.button>
                     </motion.div>
 
@@ -129,9 +171,9 @@ export default function Signin() {
                         className="text-center text-sm opacity-60"
                     >
                         Don't have an account? 
-                        <button className="ml-1 text-green-600 hover:underline">
-                            <Link to={"/Account/Signup"}>Sign Up</Link>
-                        </button>
+                        <Link to="/Account/Signup" className="ml-1 text-green-600 hover:underline">
+                            Sign Up
+                        </Link>
                     </motion.div>
                 </motion.div>
             </motion.div>

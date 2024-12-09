@@ -2,8 +2,11 @@ import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Parallax } from 'react-parallax';
+import { useSelector } from 'react-redux';
 
 export default function Home() {
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+
     const containerVariants = {
         hidden: { opacity: 0 },
         show: {
@@ -133,7 +136,7 @@ export default function Home() {
                                         cutting-edge platform.
                                     </motion.p>
                                     <div className="flex justify-center gap-6">
-                                        <Link to="/Account/Signup">
+                                        <Link to={currentUser ? "/Dashboard" : "/Account/Signup"}>
                                             <motion.button
                                                 whileHover={{ scale: 1.05 }}
                                                 whileTap={{ scale: 0.95 }}
@@ -142,7 +145,7 @@ export default function Home() {
                                                 Get Started
                                             </motion.button>
                                         </Link>
-                                        <Link to="/dashboard">
+                                        <Link to="/Dashboard">
                                             <motion.button
                                                 whileHover={{ scale: 1.05 }}
                                                 whileTap={{ scale: 0.95 }}
@@ -157,12 +160,7 @@ export default function Home() {
                         </div>
                     </Parallax>
     
-                    {/* Features Section with Parallax */}
-                    <Parallax
-                        blur={0}
-                        strength={300}
-                        className="relative"
-                    >
+                    <Parallax blur={0} strength={300} className="relative">
                         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
                         <section className="py-20 px-6 relative">
                             <motion.div
@@ -188,7 +186,6 @@ export default function Home() {
                                             <div className="card-body">
                                                 <motion.div
                                                     className="text-green-500 mb-4"
-                                                    whileHover={{ rotate: 360 }}
                                                     transition={{ duration: 0.6 }}
                                                 >
                                                     {feature.icon}
