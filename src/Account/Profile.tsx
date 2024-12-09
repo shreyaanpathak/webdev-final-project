@@ -17,7 +17,6 @@ import {
   FaClock,
 } from "react-icons/fa";
 
-
 const MotionStats = ({ children }) => (
   <motion.div
     initial={{ scale: 0.95, opacity: 0 }}
@@ -31,13 +30,13 @@ const MotionStats = ({ children }) => (
 
 const ProjectCard = ({ project }) => (
   <motion.div
-    className="bg-black/40 rounded-xl p-6 border border-green-500/20 hover:border-yellow-500/50"
+    className="bg-black/40 rounded-xl p-6 border border-green-500/20 hover:border-yellow-500/50 cursor-pointer"
     whileHover={{ scale: 1.02, y: -5 }}
     transition={{ duration: 0.2 }}
   >
     <h3 className="text-green-500 text-xl mb-2">{project.title}</h3>
     <p className="text-yellow-500/80 mb-4">{project.description}</p>
-    <div className="flex gap-2">
+    <div className="flex gap-2 flex-wrap">
       {project.technologies.map((tech, index) => (
         <span
           key={index}
@@ -50,47 +49,9 @@ const ProjectCard = ({ project }) => (
   </motion.div>
 );
 
-const testimonials = [
-  {
-    name: "Michael Thompson",
-    role: "CEO, Thompson Enterprises",
-    content:
-      "Sarah's strategic approach to wealth management has been transformative for our company's financial portfolio. Her insights have consistently led to outstanding results.",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
-  },
-  {
-    name: "Jennifer Roberts",
-    role: "Founder, Tech Innovations",
-    content:
-      "Working with Sarah has been incredibly valuable. Her deep understanding of market trends and risk management strategies helped us navigate complex investment decisions.",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
-  },
-  {
-    name: "David Chen",
-    role: "Private Client",
-    content:
-      "Sarah's personalized approach to financial planning has helped me achieve my retirement goals ahead of schedule. Her dedication to her clients is truly exceptional.",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
-  },
-];
-
-const contactInfo = {
-  email: "sarah.mitchell@financepro.com",
-  phone: "+1 (555) 123-4567",
-  location: "New York City, NY",
-  availability: "Monday - Friday: 9:00 AM - 5:00 PM EST",
-  schedule: "https://calendly.com/sarahmitchell",
-  office: "123 Wall Street, Suite 500, New York, NY 10005",
-};
-
-// Add these components
-
 const TestimonialCard = ({ testimonial }) => (
   <motion.div
-    className="bg-black/40 rounded-xl p-6 border border-green-500/20 hover:border-yellow-500/50"
+    className="bg-black/40 rounded-xl p-6 border border-green-500/20 hover:border-yellow-500/50 cursor-pointer"
     whileHover={{ scale: 1.02, y: -5 }}
     transition={{ duration: 0.2 }}
   >
@@ -139,8 +100,8 @@ const ContactSection = ({ info }) => (
       animate={{ opacity: 1, x: 0 }}
     >
       <h3 className="text-green-500 text-xl mb-4">Office Location</h3>
-      <p className="text-yellow-500/80">{info.office}</p>
-      <button className="btn bg-gradient-to-r text-white from-green-600 to-green-600 mt-4">
+      <p className="text-yellow-500/80 mb-4">{info.office}</p>
+      <button className="btn bg-gradient-to-r from-green-600 to-green-600 text-white mt-4 hover:scale-105 transition-transform">
         <FaCalendar className="mr-2" /> Directions
       </button>
     </motion.div>
@@ -152,16 +113,15 @@ export default function EnhancedProfile() {
 
   const overview = {
     summary: `A visionary financial advisor with over 15 years of experience in wealth management and strategic financial planning. Specializing in high-net-worth portfolio management and comprehensive retirement strategies. Dedicated to providing personalized financial solutions that align with clients' long-term goals while maintaining a strong focus on risk management and sustainable growth.`,
-    
     expertise: [
       "Portfolio optimization and asset allocation",
       "Retirement planning and wealth preservation",
       "Tax-efficient investment strategies",
       "Estate planning and wealth transfer",
       "Risk management and insurance solutions",
-      "Alternative investment opportunities"
-      ]
-    }
+      "Alternative investment opportunities",
+    ],
+  };
 
   const projects = [
     {
@@ -199,16 +159,95 @@ export default function EnhancedProfile() {
     { name: "Certified Investment Management Analyst (CIMA)", year: "2019" },
   ];
 
+  const testimonials = [
+    {
+      name: "Michael Thompson",
+      role: "CEO, Thompson Enterprises",
+      content:
+        "Sarah's strategic approach to wealth management has been transformative for our company's financial portfolio. Her insights have consistently led to outstanding results.",
+      image:
+        "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+    },
+    {
+      name: "Jennifer Roberts",
+      role: "Founder, Tech Innovations",
+      content:
+        "Working with Sarah has been incredibly valuable. Her deep understanding of market trends and risk management strategies helped us navigate complex investment decisions.",
+      image:
+        "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+    },
+    {
+      name: "David Chen",
+      role: "Private Client",
+      content:
+        "Sarah's personalized approach to financial planning has helped me achieve my retirement goals ahead of schedule. Her dedication to her clients is truly exceptional.",
+      image:
+        "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+    },
+  ];
+
+  const contactInfo = {
+    email: "sarah.mitchell@financepro.com",
+    phone: "+1 (555) 123-4567",
+    location: "New York City, NY",
+    availability: "Monday - Friday: 9:00 AM - 5:00 PM EST",
+    schedule: "https://calendly.com/sarahmitchell",
+    office: "123 Wall Street, Suite 500, New York, NY 10005",
+  };
+
   return (
-    <div className="relative min-h-screen bg-black">
+    <div className="relative min-h-screen w-full overflow-hidden bg-black">
+      {/* Animated Background Gradient */}
       <motion.div
-        className="relative z-10 min-h-screen p-4 lg:p-8"
+        className="absolute inset-0 z-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5 }}
+      >
+        <motion.div
+          className="absolute w-[200%] h-[200%] bg-gradient-to-r from-[#001f1f] via-black to-[#001f1f] rounded-full blur-3xl"
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 60,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        ></motion.div>
+      </motion.div>
+
+      {/* Decorative Floating Particles */}
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1.5 h-1.5 bg-green-600 rounded-full"
+          initial={{
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            opacity: 0.2 + Math.random() * 0.8,
+            scale: 0.5 + Math.random() * 1.5,
+          }}
+          animate={{
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            rotate: 360 * Math.random(),
+          }}
+          transition={{
+            duration: 10 + Math.random() * 20,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+      ))}
+
+      <motion.div
+        className="relative z-10 min-h-screen p-4 lg:p-8 flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <motion.div
-          className="max-w-7xl mx-auto bg-black/60 backdrop-blur-xl rounded-2xl p-6 lg:p-8 
+          className="max-w-7xl w-full mx-auto bg-black/60 backdrop-blur-xl rounded-2xl p-6 lg:p-8 
                      shadow-2xl border border-green-600/20 relative overflow-hidden"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -259,6 +298,7 @@ export default function EnhancedProfile() {
                 className="flex gap-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
               >
                 {[
                   { icon: <FaLinkedin />, link: "#", color: "text-blue-500" },
@@ -293,7 +333,7 @@ export default function EnhancedProfile() {
                 </button>
                 <button
                   className="btn bg-black border-2 border-yellow-500 text-yellow-500 
-                                 hover:bg-yellow-500 hover:text-black"
+                                 hover:bg-yellow-500 hover:text-black hover:scale-105 transition-transform"
                 >
                   <FaDownload className="mr-2" /> Resume
                 </button>
@@ -311,16 +351,12 @@ export default function EnhancedProfile() {
                                   border-green-500/20 rounded-xl p-4 hover:border-yellow-500/50 
                                   transition-all duration-300"
                     >
-                      <div className="text-yellow-500">{stat.icon}</div>
-                      <div className="text-green-500/80 text-sm mt-2">
-                        {stat.title}
-                      </div>
+                      <div className="text-yellow-500 text-3xl mb-2">{stat.icon}</div>
+                      <div className="text-green-500/80 text-sm">{stat.title}</div>
                       <div className="text-yellow-500 text-2xl font-bold mt-1">
                         {stat.value}
                       </div>
-                      <div className="text-green-500/60 text-sm">
-                        {stat.desc}
-                      </div>
+                      <div className="text-green-500/60 text-sm">{stat.desc}</div>
                     </div>
                   </MotionStats>
                 ))}
@@ -328,23 +364,21 @@ export default function EnhancedProfile() {
 
               {/* Tabs */}
               <div className="flex gap-4 border-b border-green-500/20 pb-2">
-                {["overview", "projects", "testimonials", "contact"].map(
-                  (tab) => (
-                    <motion.button
-                      key={tab}
-                      className={`px-4 py-2 rounded-lg ${
-                        activeTab === tab
-                          ? "bg-green-600 text-white"
-                          : "text-green-500 hover:text-yellow-500"
-                      }`}
-                      onClick={() => setActiveTab(tab)}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </motion.button>
-                  )
-                )}
+                {["overview", "projects", "testimonials", "contact"].map((tab) => (
+                  <motion.button
+                    key={tab}
+                    className={`px-4 py-2 rounded-lg ${
+                      activeTab === tab
+                        ? "bg-green-600 text-white"
+                        : "text-green-500 hover:text-yellow-500"
+                    }`}
+                    onClick={() => setActiveTab(tab)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </motion.button>
+                ))}
               </div>
 
               {/* Tab Content */}
@@ -356,25 +390,31 @@ export default function EnhancedProfile() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.2 }}
                   className="min-h-[300px]"
-                >{activeTab === "overview" && (
-                  <div className="space-y-6">
-                    <p className="text-yellow-500/80 leading-relaxed">
-                      {overview.summary}
-                    </p>
-                    
-                    <div>
-                      <h3 className="text-green-500 text-xl mb-3">Areas of Expertise</h3>
-                      <div className="grid grid-cols-2 gap-4 mb-6">
-                        {overview.expertise.map((item, index) => (
-                          <p key={index} className="text-yellow-500/80 flex items-center gap-2">
-                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                            {item}
-                          </p>
-                        ))}
+                >
+                  {activeTab === "overview" && (
+                    <div className="space-y-6">
+                      <p className="text-yellow-500/80 leading-relaxed">
+                        {overview.summary}
+                      </p>
+
+                      <div>
+                        <h3 className="text-green-500 text-xl mb-3">
+                          Areas of Expertise
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                          {overview.expertise.map((item, index) => (
+                            <p
+                              key={index}
+                              className="text-yellow-500/80 flex items-center gap-2"
+                            >
+                              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                              {item}
+                            </p>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
                   {activeTab === "testimonials" && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {testimonials.map((testimonial, index) => (
@@ -386,9 +426,8 @@ export default function EnhancedProfile() {
                     </div>
                   )}
 
-                  {activeTab === "contact" && (
-                    <ContactSection info={contactInfo} />
-                  )}
+                  {activeTab === "contact" && <ContactSection info={contactInfo} />}
+
                   {activeTab === "projects" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {projects.map((project, index) => (
@@ -396,8 +435,6 @@ export default function EnhancedProfile() {
                       ))}
                     </div>
                   )}
-
-                  {/* Add other tab contents here */}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -413,7 +450,7 @@ export default function EnhancedProfile() {
               <motion.div
                 key={index}
                 className="bg-green-900/10 border border-green-500/20 rounded-lg p-4
-                          hover:border-yellow-500/50 transition-all duration-300"
+                          hover:border-yellow-500/50 transition-all duration-300 cursor-pointer"
                 whileHover={{ scale: 1.02, y: -5 }}
               >
                 <FaCertificate className="text-yellow-500 text-2xl mb-2" />
