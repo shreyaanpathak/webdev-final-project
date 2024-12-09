@@ -16,6 +16,12 @@ export default {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
         }
+      },
+      colors: {
+        'app-black': '#111111',
+        'app-dark': '#1A1A1A',
+        'app-gold': '#FFB800',
+        'app-gold-dark': '#CC9400'
       }
     },
   },

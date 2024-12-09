@@ -181,8 +181,7 @@ export default function Home() {
                                             key={index}
                                             variants={itemVariants}
                                             whileHover={{
-                                                scale: 1.05,
-                                                transition: { type: "spring", stiffness: 300 }
+                                                scale: 1.05
                                             }}
                                             className="card bg-black/30 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
                                         >
