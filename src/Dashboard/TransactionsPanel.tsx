@@ -28,7 +28,7 @@ export const TransactionsPanel = () => {
                     </thead>
                     <tbody>
                         {transactions.map((transaction) => (
-                            <tr key={transaction.id} className="border-b border-[#10B981]/20">
+                            <tr key={transaction.id} className="border-b border-[#10B981]/20 hover:bg-[#0D1F17]/80 transition-all duration-300">
                                 <td className="py-4">
                                     <span className={`px-3 py-1 rounded-full text-sm ${transaction.type === "BUY"
                                             ? "bg-[#10B981]/20 text-[#10B981]"

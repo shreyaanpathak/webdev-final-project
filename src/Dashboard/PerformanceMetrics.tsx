@@ -91,7 +91,7 @@ export const PerformanceMetrics = () => {
                     ))}
                 </div>
             </div>
-            <div className="h-[400px]">
+            <div className="h-[650px]">
                 <Line data={lineData} options={options} />
             </div>
         </motion.div>
