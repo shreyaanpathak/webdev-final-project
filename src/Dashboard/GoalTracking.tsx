@@ -91,7 +91,7 @@ export const GoalTracking = () => {
 
             {/* Retirement Projection */}
             <div>
-                <h3 className="text-[#10B981] font-bold mb-4">Retirement Fund Projection</h3>
+                <h3 className="text-[#10B981] font-bold mb-1">Retirement Fund Projection</h3>
                 <div className="h-[200px]">
                     <Line data={projectionData} options={options} />
                 </div>

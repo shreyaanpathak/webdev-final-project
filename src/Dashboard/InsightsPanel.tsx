@@ -63,7 +63,7 @@ export const InsightsPanel = () => {
                         { title: "Increase Bonds", description: "Add 3% to bond allocation for stability" },
                         { title: "New Opportunity", description: "Healthcare sector showing strong growth potential" }
                     ].map((item, index) => (
-                        <div key={index} className="bg-[#0D1F17] p-4 rounded-lg">
+                        <div key={index} className="bg-[#0D1F17] p-4 rounded-lg hover:bg-[#0D1F17]/80 hover:border-[#10B981]/30 transition-all duration-300 border border-[#10B981]/10">
                             <h4 className="text-[#FFB800] font-bold mb-1">{item.title}</h4>
                             <p className="text-[#10B981] text-sm">{item.description}</p>
                         </div>

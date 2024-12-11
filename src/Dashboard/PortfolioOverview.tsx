@@ -67,7 +67,7 @@ export const PortfolioOverview = () => {
             className="bg-[#141414] rounded-xl p-6 border border-[#10B981]/20 shadow-lg shadow-[#10B981]/5 hover:shadow-xl hover:shadow-[#10B981]/10 transition-shadow duration-300"
         >
             <h2 className="text-xl font-bold text-[#FFB800] mb-6">Portfolio Overview</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols- md:grid-cols-2 gap-8">
                 <div className="bg-[#0D1F17] p-4 rounded-lg">
                     <h3 className="text-[#10B981] mb-4">Total Portfolio Value</h3>
                     <div className="text-4xl font-bold text-white">$247,582.21</div>
