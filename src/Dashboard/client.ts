@@ -1,6 +1,24 @@
 import { api } from "../config";
 
-// Interfaces
+
+export interface Recommendation {
+  title: string;
+  description: string;
+}
+
+export interface PortfolioInsights {
+  risk_level: "Low" | "Moderate" | "High";
+  health_score: number;
+  health_rating: string;
+  recommendations: Array<{
+      title: string;
+      description: string;
+  }>;
+}
+export interface RiskMeterProps {
+  risk: "Low" | "Moderate" | "High";
+}
+
 export interface Position {
   symbol: string;
   quantity: number;
@@ -24,11 +42,37 @@ export interface SectorData {
   color: string;
 }
 
+export interface PortfolioPerformance {
+  total_value: number;
+  total_gain_loss: number;
+  total_gain_loss_percentage: number;
+  realized_gains: number;
+  unrealized_gains: number;
+  total_invested: number;
+}
+
+export interface QuoteData {
+  symbol: string;
+  price: number;
+  change: number;
+  percentChange: number;
+  high: number;
+  low: number;
+  volume?: number;
+  latest_trading_day?: string;
+  name?: string;
+  currency?: string;
+  marketCap?: number;
+}
+
 export interface PortfolioSummary {
   total_value: number;
   total_gain_loss: number;
   total_gain_loss_percentage: number;
-  sector_allocation: SectorData[];
+  realized_gains: number;
+  unrealized_gains: number;
+  total_invested: number;
+  sector_allocation: SectorAllocation[];
   positions: Position[];
 }
 
@@ -60,6 +104,32 @@ export interface Transaction {
   expiration?: string;
 }
 
+export interface SectorData {
+  sector: string;
+  value: number;
+  percentage: number;
+  color: string;
+}
+
+export interface SectorAllocationResponse {
+  sector_allocation: SectorData[];
+  total_value: number;
+}
+
+// Update the function to use the correct return type
+export const getSectorAllocation = async (userId: string): Promise<SectorAllocationResponse> => {
+  try {
+    const response = await api.get<SectorAllocationResponse>(`/stocks/portfolio/${userId}/sector-allocation`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to get sector allocation:', error);
+    return { 
+      sector_allocation: [],
+      total_value: 0
+    };
+  }
+};
+
 export const getTransactions = async (userId: string): Promise<Transaction[]> => {
   try {
     console.log('Fetching transactions for user:', userId);
@@ -84,16 +154,6 @@ export const getPortfolio = async (userId: string): Promise<PortfolioData> => {
   }
 };
 
-export const getPortfolioSummary = async (userId: string): Promise<PortfolioSummary> => {
-  try {
-    const response = await api.get<PortfolioSummary>(`/stocks/portfolio/${userId}/summary`);
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch portfolio summary:", error);
-    throw error;
-  }
-};
-
 export const getPortfolioHistory = async (userId: string): Promise<PortfolioHistory> => {
   try {
     const response = await api.get<PortfolioHistory>(`/stocks/portfolio/${userId}/history`);
@@ -104,30 +164,6 @@ export const getPortfolioHistory = async (userId: string): Promise<PortfolioHist
   }
 };
 
-export const getSectorAllocation = async (userId: string): Promise<SectorData[]> => {
-  try {
-    const response = await api.get<SectorData[]>(`/stocks/portfolio/${userId}/sectors`);
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch sector allocation:", error);
-    throw error;
-  }
-};
-
-// Quote data interface and functions
-export interface QuoteData {
-  symbol: string;
-  price: number;
-  change: number;
-  percentChange: number;
-  high: number;
-  low: number;
-  volume?: number;
-  latest_trading_day?: string;
-  name?: string;
-  currency?: string;
-  marketCap?: number;
-}
 
 export const getQuote = async (symbol: string): Promise<QuoteData> => {
   try {
@@ -211,5 +247,43 @@ export const updateGoals = async (userId: string, goals: any) => {
   } catch (error) {
     console.error("Failed to update goals:", error);
     throw error;
+  }
+};
+
+export const getPortfolioSummary = async (userId: string): Promise<PortfolioSummary> => {
+  try {
+    const response = await api.get(`/stocks/portfolio/${userId}/sector-breakdown`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to get portfolio summary:', error);
+    throw error;
+  }
+};
+
+export const getPortfolioPerformance = async (userId: string): Promise<PortfolioPerformance> => {
+  try {
+      const response = await api.get(`/stocks/portfolio/${userId}/performance`);
+      return response.data;
+  } catch (error) {
+      console.error('Failed to get portfolio performance:', error);
+      return {
+          total_value: 0,
+          total_gain_loss: 0,
+          total_gain_loss_percentage: 0,
+          realized_gains: 0,
+          unrealized_gains: 0,
+          total_invested: 0
+      };
+  }
+};
+
+
+export const getPortfolioInsights = async (userId: string): Promise<PortfolioInsights> => {
+  try {
+      const response = await api.get<PortfolioInsights>(`/stocks/insights/${userId}`);
+      return response.data;
+  } catch (error) {
+      console.error("Failed to fetch portfolio insights:", error);
+      throw error;
   }
 };
