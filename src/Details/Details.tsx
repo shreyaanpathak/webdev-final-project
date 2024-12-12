@@ -144,7 +144,19 @@ export default function Details() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] p-8 flex items-center justify-center">
-        <div className="text-[#10B981]">Loading...</div>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center space-y-6"
+        >
+          <div className="w-16 h-16 border-4 border-[#10B981]/20 border-t-[#10B981] rounded-full animate-spin mx-auto" />
+          <div className="space-y-3">
+            <h3 className="text-xl font-bold text-[#10B981]">Loading Stock Data</h3>
+            <div className="text-sm text-[#10B981]/60">
+              Fetching market data and analysis for {symbol}
+            </div>
+          </div>
+        </motion.div>
       </div>
     );
   }
