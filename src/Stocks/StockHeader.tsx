@@ -60,10 +60,6 @@ const SPIndex = ({ spIndex }) => {
   );
 };
 
-// ... rest of the code remains the same ...
-
-// In navigate call, fix the template literal
-navigate(`/Stocks/${symbol}`);
 
 const MarketStatus = ({ marketStatus }) => (
   <InfoBox
