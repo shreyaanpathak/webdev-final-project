@@ -261,7 +261,6 @@ export const StockHeader = () => {
               />
             </div>
           </div>
-          </div>
 
           {/* Market Info Section */}
           <div className="flex flex-wrap justify-center lg:justify-end items-center gap-3 w-full lg:w-[30%]">
@@ -270,6 +269,7 @@ export const StockHeader = () => {
             <TradingVolume tradingVolume={tradingVolume} />
           </div>
         </div>
+      </div>
     </motion.div>
   );
 };
