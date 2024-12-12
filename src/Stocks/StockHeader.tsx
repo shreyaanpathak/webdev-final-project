@@ -66,9 +66,8 @@ const MarketStatus = ({ marketStatus }) => (
     value={
       <div className="flex items-center gap-2">
         <span
-          className={`w-2 h-2 rounded-full ${
-            marketStatus === "Open" ? "bg-[#10B981]" : "bg-[#EF4444]"
-          }`}
+          className={`w-2 h-2 rounded-full ${marketStatus === "Open" ? "bg-[#10B981]" : "bg-[#EF4444]"
+            }`}
         />
         {marketStatus}
       </div>
@@ -200,76 +199,77 @@ export const StockHeader = () => {
               <FaSearch className="text-base" />
             </button>
 
-          <AnimatePresence>
-            {showSearchResults && (
-              <motion.ul
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute mt-2 w-full bg-[#252525] border border-[#10B981]/20 rounded-lg shadow-xl z-50 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#10B981] scrollbar-track-[#1A1A1A]"
-              >
-                {loading ? (
-                  <li className="px-4 py-2 text-[#10B981] text-sm">
-                    Searching...
-                  </li>
-                ) : searchResults.length > 0 ? (
-                  searchResults.map((result) => (
-                    <motion.li
-                      key={result.symbol}
-                      whileHover={{
-                        backgroundColor: "rgba(16, 185, 129, 0.1)",
-                      }}
-                      className="px-4 py-2 cursor-pointer border-b border-[#10B981]/10 last:border-none transition-all duration-300"
-                      onClick={() => handleSelectResult(result.symbol)}
-                    >
-                      <div className="text-[#FFB800] font-bold text-sm">
-                        {result.symbol}
-                      </div>
-                      <div className="text-[#10B981] text-xs">
-                        {result.name}
-                      </div>
-                    </motion.li>
-                  ))
-                ) : (
-                  searchQuery.trim() && (
+            <AnimatePresence>
+              {showSearchResults && (
+                <motion.ul
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute mt-2 w-full bg-[#252525] border border-[#10B981]/20 rounded-lg shadow-xl z-50 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#10B981] scrollbar-track-[#1A1A1A]"
+                >
+                  {loading ? (
                     <li className="px-4 py-2 text-[#10B981] text-sm">
-                      No results found
+                      Searching...
                     </li>
-                  )
-                )}
-              </motion.ul>
-            )}
-          </AnimatePresence>
-        </div>
+                  ) : searchResults.length > 0 ? (
+                    searchResults.map((result) => (
+                      <motion.li
+                        key={result.symbol}
+                        whileHover={{
+                          backgroundColor: "rgba(16, 185, 129, 0.1)",
+                        }}
+                        className="px-4 py-2 cursor-pointer border-b border-[#10B981]/10 last:border-none transition-all duration-300"
+                        onClick={() => handleSelectResult(result.symbol)}
+                      >
+                        <div className="text-[#FFB800] font-bold text-sm">
+                          {result.symbol}
+                        </div>
+                        <div className="text-[#10B981] text-xs">
+                          {result.name}
+                        </div>
+                      </motion.li>
+                    ))
+                  ) : (
+                    searchQuery.trim() && (
+                      <li className="px-4 py-2 text-[#10B981] text-sm">
+                        No results found
+                      </li>
+                    )
+                  )}
+                </motion.ul>
+              )}
+            </AnimatePresence>
+          </div>
 
-        {/* Title Section */}
-        <div className="lg:w-[40%] flex flex-col items-center justify-center">
-          <motion.h1
-            className="text-2xl md:text-3xl lg:text-4xl font-bold text-center"
-            variants={fadeInUp}
-          >
-            <span className="text-white">Stock </span>
-            <span className="text-[#10B981]">Portfolio</span>
-            <span className="text-white"> Dashboard</span>
-          </motion.h1>
+          {/* Title Section */}
+          <div className="lg:w-[40%] flex flex-col items-center justify-center">
+            <motion.h1
+              className="text-2xl md:text-3xl lg:text-4xl font-bold text-center"
+              variants={fadeInUp}
+            >
+              <span className="text-white">Stock </span>
+              <span className="text-[#10B981]">Portfolio</span>
+              <span className="text-white"> Dashboard</span>
+            </motion.h1>
 
-          <div className="relative w-full flex justify-center mt-3">
-            <motion.div
-              className="h-1 w-24 bg-[#FFB800] rounded-full absolute"
-              initial={{ width: 0, x: "-50%", left: "50%" }}
-              animate={{ width: 96 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            />
+            <div className="relative w-full flex justify-center mt-3">
+              <motion.div
+                className="h-1 w-24 bg-[#FFB800] rounded-full absolute"
+                initial={{ width: 0, x: "-50%", left: "50%" }}
+                animate={{ width: 96 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              />
+            </div>
+          </div>
+          </div>
+
+          {/* Market Info Section */}
+          <div className="flex flex-wrap justify-center lg:justify-end items-center gap-3 w-full lg:w-[30%]">
+            <MarketStatus marketStatus={marketStatus} />
+            <SPIndex spIndex={spIndex} />
+            <TradingVolume tradingVolume={tradingVolume} />
           </div>
         </div>
-
-        {/* Market Info Section */}
-        <div className="flex flex-wrap justify-center lg:justify-end items-center gap-3 w-full lg:w-[30%]">
-          <MarketStatus marketStatus={marketStatus} />
-          <SPIndex spIndex={spIndex} />
-          <TradingVolume tradingVolume={tradingVolume} />
-        </div>
-      </div>
     </motion.div>
   );
 };
