@@ -1,14 +1,33 @@
-// PortfolioOverview.tsx
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { Pie, Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement
+} from 'chart.js';
+import { Pie } from "react-chartjs-2";
 import { cardVariants } from "./constants";
 import * as client from "./client";
 import type { PortfolioSummary, PortfolioHistory, Position } from "./client";
 import type { RootState } from "../store";
 import { FaChartPie, FaChartLine, FaDollarSign, FaArrowUp, FaArrowDown } from "react-icons/fa";
+
+// Register Chart.js components
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement
+);
 
 interface PositionCardProps {
   position: Position;
@@ -37,10 +56,18 @@ const PositionCard = ({ position }: PositionCardProps) => (
 
 export const PortfolioOverview = () => {
   const [summary, setSummary] = useState<PortfolioSummary | null>(null);
-  const [history, setHistory] = useState<PortfolioHistory | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+
+  const pieData = useMemo(() => ({
+    labels: summary?.sector_allocation?.map(item => item.sector) || [],
+    datasets: [{
+      data: summary?.sector_allocation?.map(item => item.percentage) || [],
+      backgroundColor: summary?.sector_allocation?.map(item => item.color) || [],
+      borderWidth: 0,
+    }]
+  }), [summary?.sector_allocation]);
 
   const chartOptions = {
     responsive: true,
@@ -68,13 +95,13 @@ export const PortfolioOverview = () => {
         displayColors: true,
         callbacks: {
           label: function(context: any) {
-            return `${context.label}: ${context.parsed}%`;
+            const value = summary?.sector_allocation?.[context.dataIndex]?.value || 0;
+            return `${context.label}: $${value.toLocaleString()} (${context.parsed}%)`;
           }
         }
       }
     }
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,15 +109,40 @@ export const PortfolioOverview = () => {
 
       try {
         setLoading(true);
-        const [summaryData, historyData] = await Promise.all([
-          client.getPortfolioSummary(currentUser._id),
-          client.getPortfolioHistory(currentUser._id)
+        setError(null);
+
+        const [portfolioData, performanceData, sectorAllocationData] = await Promise.all([
+          client.getPortfolio(currentUser._id).catch(err => {
+            console.error("Portfolio fetch error:", err);
+            throw new Error("Failed to fetch portfolio data");
+          }),
+          client.getPortfolioPerformance(currentUser._id).catch(err => {
+            console.error("Performance fetch error:", err);
+            return {
+              total_gain_loss: 0,
+              total_gain_loss_percentage: 0,
+              realized_gains: 0,
+              unrealized_gains: 0,
+              total_invested: 0
+            };
+          }),
+          client.getSectorAllocation(currentUser._id)
         ]);
-        setSummary(summaryData);
-        setHistory(historyData);
+
+        setSummary({
+          total_value: portfolioData.total_value || 0,
+          total_gain_loss: performanceData.total_gain_loss || 0,
+          total_gain_loss_percentage: performanceData.total_gain_loss_percentage || 0,
+          sector_allocation: sectorAllocationData.sector_allocation,
+          positions: portfolioData.positions || [],
+          realized_gains: performanceData.realized_gains || 0,
+          unrealized_gains: performanceData.unrealized_gains || 0,
+          total_invested: performanceData.total_invested || 0
+        });
+
       } catch (err) {
         console.error("Failed to fetch portfolio data:", err);
-        setError("Failed to load portfolio data");
+        setError(err instanceof Error ? err.message : "Failed to load portfolio data");
       } finally {
         setLoading(false);
       }
@@ -100,27 +152,6 @@ export const PortfolioOverview = () => {
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, [currentUser]);
-
-  const pieData = {
-    labels: summary?.sector_allocation?.map(item => item.sector) || [],
-    datasets: [{
-      data: summary?.sector_allocation?.map(item => item.percentage) || [],
-      backgroundColor: summary?.sector_allocation?.map(item => item.color) || [],
-      borderWidth: 0,
-    }]
-  };
-
-  const historyData = {
-    labels: history?.dates || [],
-    datasets: [{
-      label: 'Portfolio Value',
-      data: history?.values || [],
-      borderColor: '#10B981',
-      backgroundColor: 'rgba(16, 185, 129, 0.1)',
-      fill: true,
-      tension: 0.4
-    }]
-  };
 
   if (loading) {
     return (
@@ -162,7 +193,6 @@ export const PortfolioOverview = () => {
         </div>
       </div>
 
-      {/* Value and Performance Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-[#0D1F17] p-6 rounded-lg border border-[#10B981]/20">
           <div className="flex items-center gap-2 mb-2">
@@ -193,12 +223,17 @@ export const PortfolioOverview = () => {
             <h3 className="text-[#10B981] font-medium">Sector Allocation</h3>
           </div>
           <div className="h-[150px]">
-            <Pie data={pieData} options={chartOptions} />
+            {summary.sector_allocation && summary.sector_allocation.length > 0 ? (
+              <Pie data={pieData} options={chartOptions} />
+            ) : (
+              <div className="text-center text-[#10B981] h-full flex items-center justify-center">
+                No sector data available
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Positions Section */}
       <div>
         <h3 className="text-[#10B981] font-bold mb-4 flex items-center gap-2">
           <FaChartLine />

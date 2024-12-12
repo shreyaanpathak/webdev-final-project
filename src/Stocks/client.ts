@@ -14,6 +14,32 @@ export interface QuoteData {
   marketCap?: number;
 }
 
+export interface OptionTrade {
+  strike: number;
+  premium: number;
+  expiration: string;
+  type: "CALL" | "PUT";
+  trade_type: "BUY" | "SELL";
+  quantity: number;
+}
+
+export interface OptionsChain {
+  calls: OptionTrade[];
+  puts: OptionTrade[];
+}
+
+export interface ConfirmationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  type: "BUY" | "SELL";
+  symbol: string;
+  quantity: number;
+  price: number;
+  availableCash: number;
+  loading: boolean;
+}
+
 export interface TradeData {
   symbol: string;
   type: "BUY" | "SELL";

@@ -26,6 +26,7 @@ interface PortfolioState {
     low: number;
     volume: number;
     latest_trading_day: string;
+    
   }>;
   positions: StockPosition[];
   options: OptionPosition[];
@@ -33,6 +34,8 @@ interface PortfolioState {
   transactions: any[];
   watchlist: string[];
   total_value: number;
+  portfolioLastUpdated: number | null;
+  
 }
 
 const initialState: PortfolioState = {
@@ -43,7 +46,8 @@ const initialState: PortfolioState = {
   cash: 25000,
   transactions: [],
   watchlist: [],
-  total_value: 25000
+  total_value: 25000,
+  portfolioLastUpdated: null
 };
 
 const stocksSlice = createSlice({
@@ -61,6 +65,7 @@ const stocksSlice = createSlice({
       state.options = payload.options || [];
       state.cash = payload.cash;
       state.total_value = payload.total_value;
+      state.portfolioLastUpdated = Date.now();
     },
     addToWatchlist: (state, { payload: symbol }) => {
       if (!state.watchlist.includes(symbol)) {
