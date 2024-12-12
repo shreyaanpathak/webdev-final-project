@@ -199,7 +199,6 @@ export const StockHeader = () => {
             >
               <FaSearch className="text-base" />
             </button>
-          </motion.div>
 
           <AnimatePresence>
             {showSearchResults && (
