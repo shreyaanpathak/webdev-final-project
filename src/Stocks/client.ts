@@ -1,35 +1,147 @@
-// client.ts
 import { api } from "../config";
 
-// Existing API calls
-export const getQuote = async (symbol: string) => {
+export interface QuoteData {
+  symbol: string;
+  price: number;
+  change: number;
+  percentChange: number;
+  high: number;
+  low: number;
+  volume?: number;
+  latest_trading_day?: string;
+  name?: string;
+  currency?: string;
+  marketCap?: number;
+}
+
+export interface TradeData {
+  symbol: string;
+  type: "BUY" | "SELL";
+  quantity: number;
+  price: number;
+}
+
+export interface HistoricalData {
+  labels: string[];
+  prices: number[];
+  symbol?: string;
+  timeframe?: string;
+}
+
+export interface SearchResult {
+  symbol: string;
+  name: string;
+  type: string;
+}
+
+export interface SearchResponse {
+  results: SearchResult[];
+  count: number;
+}
+
+
+export interface OptionTradeResponse {
+  cash: number;
+  positions: Array<{
+    symbol: string;
+    quantity: number;
+    current_price: number;
+    current_value: number;
+  }>;
+  options: Array<{
+    symbol: string;
+    option_type: string;
+    strike: number;
+    expiration: string;
+    quantity: number;
+  }>;
+  total_value: number;
+}
+
+export const executeOptionTrade = async (
+  userId: string,
+  symbol: string,
+  option_type: "CALL" | "PUT",
+  strike: number,
+  premium: number,
+  expiration: string,
+  trade_type: "BUY" | "SELL",
+  quantity: number
+) => {
   try {
-    const response = await api.get(`/stocks/quote/${symbol}`);
-    return response.data;
-  } catch (error: any) {
-    console.error(`Failed to fetch quote for ${symbol}:`, error);
-    return {
+    console.log("Executing option trade with data:", {
+      user_id: userId,
       symbol,
-      price: 100 + Math.random() * 10,
-      change: Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1),
-      percentChange: Math.random() * 3 * (Math.random() > 0.5 ? 1 : -1),
-      high: 110 + Math.random() * 10,
-      low: 90 + Math.random() * 10,
-      volume: Math.floor(Math.random() * 1000000),
-      latest_trading_day: new Date().toISOString().split('T')[0]
-    };
+      option_type,
+      strike,
+      premium,
+      expiration,
+      trade_type,
+      quantity
+    });
+
+    const response = await api.post(`/stocks/options/trade`, {
+      user_id: userId,
+      symbol,
+      option_type,
+      strike,
+      premium,
+      expiration,
+      trade_type,
+      quantity
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error("Trade error response:", {
+        data: error.response.data,
+        status: error.response.status,
+        headers: error.response.headers
+      });
+      throw new Error(error.response.data.detail || "Failed to execute trade");
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error("No response received:", error.request);
+      throw new Error("No response received from server");
+    } else {
+      // Something happened in setting up the request
+      console.error("Error setting up request:", error.message);
+      throw error;
+    }
   }
 };
 
-export const executeTrade = async (
-  userId: string,
-  tradeData: {
-    symbol: string;
-    type: "BUY" | "SELL";
-    quantity: number;
-    price: number;
+export const getOptionsChain = async (symbol: string) => {
+  try {
+    const response = await api.get(`/stocks/options/${symbol}`);
+    console.log("Options chain response:", response.data); // Debug log
+    return response.data;
+  } catch (error) {
+    console.error("Options chain error details:", {
+      error,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    throw error;
   }
-) => {
+};
+
+// Fetch a quote for a symbol
+export const getQuote = async (symbol: string): Promise<QuoteData> => {
+  try {
+    const response = await api.get<QuoteData>(`/stocks/quote/${symbol}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch quote for ${symbol}:`, error);
+    throw error;
+  }
+};
+
+// Execute a trade for a user
+export const executeTrade = async (userId: string, tradeData: TradeData) => {
   try {
     const response = await api.post(`/stocks/trade`, tradeData, {
       params: { user_id: userId },
@@ -41,20 +153,30 @@ export const executeTrade = async (
   }
 };
 
+// Get the user's portfolio
 export const getPortfolio = async (userId: string) => {
-  const response = await api.get(`/stocks/portfolio/${userId}`);
-  return response.data;
+  try {
+    const response = await api.get(`/stocks/portfolio/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch portfolio:", error);
+    throw error;
+  }
 };
 
+// Get performance metrics for a user over a given timeframe
 export const getPerformanceMetrics = async (userId: string, timeframe = "1M") => {
-  const response = await api.get(`/stocks/performance/${userId}`, {
-    params: { timeframe },
-  });
-  return response.data;
+  try {
+    const response = await api.get(`/stocks/performance/${userId}`, { params: { timeframe } });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch performance metrics:", error);
+    throw error;
+  }
 };
 
-// Watchlist functions (already implemented)
-export const getWatchlist = async (userId: string) => {
+// Watchlist functions
+export const getWatchlist = async (userId: string): Promise<string[]> => {
   try {
     const response = await api.get(`/auth/watchlist/${userId}`);
     return response.data;
@@ -84,66 +206,38 @@ export const removeFromWatchlist = async (userId: string, symbol: string) => {
   }
 };
 
-// New API calls
+// Market overview
 export const getMarketOverview = async () => {
-  const response = await api.get(`/stocks/market/overview`);
-  return response.data;
-};
-
-export const searchStocks = async (query: string) => {
-  const response = await api.get(`/stocks/search`, { 
-    params: { query } 
-  });
-  return response.data;
-};
-
-export const getHistoricalPrices = async (symbol: string, timeframe: string) => {
   try {
-    const response = await api.get(`/stocks/historical/${symbol}`, {
+    const response = await api.get(`/stocks/market/overview`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch market overview:", error);
+    throw error;
+  }
+};
+
+// Historical prices
+export const getHistoricalPrices = async (symbol: string, timeframe: string): Promise<HistoricalData> => {
+  try {
+    const response = await api.get<HistoricalData>(`/stocks/historical/${symbol}`, {
       params: { timeframe }
     });
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     console.error(`Failed to fetch historical prices for ${symbol}:`, error);
-    // Return mock data for demo purposes
-    const mockData = generateMockHistoricalData(timeframe);
-    return mockData;
+    throw error;
   }
 };
 
-const generateMockHistoricalData = (timeframe: string) => {
-  const dataPoints = timeframe === "1D" ? 8 : 
-                    timeframe === "1W" ? 7 :
-                    timeframe === "1M" ? 30 : 
-                    timeframe === "3M" ? 90 :
-                    timeframe === "6M" ? 180 : 365;
-
-  const basePrice = 100 + Math.random() * 100;
-  const volatility = 0.02;
-  
-  const data = {
-    labels: [],
-    prices: []
-  };
-
-  let currentPrice = basePrice;
-  
-  for (let i = 0; i < dataPoints; i++) {
-    const change = currentPrice * volatility * (Math.random() - 0.5);
-    currentPrice += change;
-    
-    if (timeframe === "1D") {
-      const hour = 9 + Math.floor(i * (7/7));
-      const minute = (i % 2) * 30;
-      data.labels.push(`${hour}:${minute.toString().padStart(2, '0')}`);
-    } else {
-      const date = new Date();
-      date.setDate(date.getDate() - (dataPoints - i));
-      data.labels.push(date.toLocaleDateString());
-    }
-    
-    data.prices.push(currentPrice);
+export const searchStocks = async (query: string): Promise<SearchResponse> => {
+  try {
+    const response = await api.get<SearchResponse>(`/stocks/search`, {
+      params: { query }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Search failed:", error);
+    return { results: [], count: 0 };
   }
-
-  return data;
 };
