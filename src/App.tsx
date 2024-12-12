@@ -4,7 +4,6 @@ import Account from './Account'
 import Dashboard from './Dashboard'
 import Navbar from "./Home/Navbar"
 import CustomCursor from './Home/CustomCursor'
-import FloatingParticles from './Home/FloatingParticles'
 import Stocks from "./Stocks/index"
 import Session from './Account/Session'
 import ProtectedRoute from './Account/ProtectedRoute'
@@ -15,7 +14,6 @@ function App() {
     <div className="w-screen h-screen" data-theme="luxury">
       <Session>
         <HashRouter>
-          <FloatingParticles/>
           <CustomCursor/>
           <Navbar/>
           <Routes>

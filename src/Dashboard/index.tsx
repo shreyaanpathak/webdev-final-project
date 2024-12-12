@@ -1,5 +1,4 @@
 // Modified index.tsx
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import "./chartSetup";
 import { DashboardHeader } from "./DashboardHeader";

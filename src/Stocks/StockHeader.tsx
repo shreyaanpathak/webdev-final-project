@@ -12,60 +12,67 @@ interface SearchResult {
   type: string;
 }
 
-const TradingVolume = ({ tradingVolume }: { tradingVolume: number | null }) => {
-  const volumeDisplay = tradingVolume ? `${(tradingVolume / 1e6).toFixed(2)}M` : "N/A";
-
-  return (
-    <motion.div 
-      whileHover={{ scale: 1.02 }}
-      className="bg-[#1A1A1A] rounded-lg border border-[#10B981]/20 px-3 md:px-6 lg:px-12 py-2 flex flex-col justify-center flex-shrink-0 transition-all duration-300"
-    >
-      <div className="text-[#10B981] text-[10px] md:text-[11px] lg:text-xs whitespace-nowrap transition-all duration-300">Trading Volume</div>
-      <div className="text-[#FFB800] text-[11px] md:text-[12px] lg:text-sm font-bold transition-all duration-300">{volumeDisplay}</div>
-    </motion.div>
-  );
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
 };
 
-const SPIndex = ({
-  spIndex,
-}: {
-  spIndex: { value: number; changePercent: number } | null;
-}) => {
+const InfoBox = ({ title, value, color }) => (
+  <motion.div 
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="bg-gradient-to-br from-[#1A1A1A] to-[#252525] rounded-lg border border-[#10B981]/20 px-4 py-3 flex flex-col justify-center shadow-lg transition-all duration-300"
+  >
+    <div className={`text-${color} text-xs font-medium mb-1`}>{title}</div>
+    <div className="text-white text-sm font-bold">{value}</div>
+  </motion.div>
+);
+
+const TradingVolume = ({ tradingVolume }) => (
+  <InfoBox 
+    title="Trading Volume" 
+    value={tradingVolume ? `${(tradingVolume / 1e6).toFixed(2)}M` : "N/A"}
+    color="[#10B981]"
+  />
+);
+
+const SPIndex = ({ spIndex }) => {
   const value = spIndex?.value ?? 4783.45;
   const changePercent = spIndex?.changePercent ?? 1.2;
   const changeColor = changePercent >= 0 ? "#10B981" : "#EF4444";
 
   return (
-    <motion.div 
-      whileHover={{ scale: 1.02 }}
-      className="bg-[#1A1A1A] rounded-lg border border-[#10B981]/20 px-3 md:px-6 lg:px-12 py-2 flex flex-col justify-center flex-shrink-0 transition-all duration-300"
-    >
-      <div className="text-[#10B981] text-[10px] md:text-[11px] lg:text-xs transition-all duration-300">S&P 500</div>
-      <div className="text-[#FFB800] text-[11px] md:text-[12px] lg:text-sm font-bold whitespace-nowrap transition-all duration-300">
-        {value.toLocaleString()}{" "}
-        <span style={{ color: changeColor }}>
-          {changePercent > 0 ? `+${changePercent.toFixed(2)}%` : `${changePercent.toFixed(2)}%`}
-        </span>
-      </div>
-    </motion.div>
+    <InfoBox 
+      title="S&P 500" 
+      value={
+        <>
+          {value.toLocaleString()}{" "}
+          <span style={{ color: changeColor }}>
+            {changePercent > 0 ? `+${changePercent.toFixed(2)}%` : `${changePercent.toFixed(2)}%`}
+          </span>
+        </>
+      }
+      color="[#FFB800]"
+    />
   );
 };
 
-const MarketStatus = ({ marketStatus }: { marketStatus: string }) => (
-  <motion.div 
-    whileHover={{ scale: 1.02 }}
-    className="bg-[#1A1A1A] rounded-lg border border-[#10B981]/20 px-3 md:px-6 lg:px-12 py-2 flex flex-col justify-center flex-shrink-0 transition-all duration-300"
-  >
-    <div className="text-[#10B981] text-[10px] md:text-[11px] lg:text-xs transition-all duration-300">Market Status</div>
-    <div className="text-[#FFB800] text-[11px] md:text-[12px] lg:text-sm font-bold flex items-center gap-1 whitespace-nowrap transition-all duration-300">
-      <span
-        className={`w-1.5 h-1.5 md:w-1.75 md:h-1.75 lg:w-2 lg:h-2 rounded-full transition-all duration-300 ${
-          marketStatus === "Open" ? "bg-[#10B981]" : "bg-[#EF4444]"
-        }`}
-      ></span>
-      {marketStatus}
-    </div>
-  </motion.div>
+const MarketStatus = ({ marketStatus }) => (
+  <InfoBox 
+    title="Market Status" 
+    value={
+      <div className="flex items-center gap-2">
+        <span
+          className={`w-2 h-2 rounded-full ${
+            marketStatus === "Open" ? "bg-[#10B981]" : "bg-[#EF4444]"
+          }`}
+        />
+        {marketStatus}
+      </div>
+    }
+    color="[#FFB800]"
+  />
 );
 
 export const StockHeader = () => {
@@ -158,47 +165,48 @@ export const StockHeader = () => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-[#111111] border-b border-[#10B981]/20 sticky top-0 z-50"
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={fadeInUp}
+      className="bg-gradient-to-r from-[#111111] to-[#1A1A1A] border-b border-[#10B981]/20 shadow-lg"
     >
-      <div className="max-w-[1920px] mx-auto p-4 sm:p-6 flex flex-col lg:grid lg:grid-cols-3 gap-6 lg:gap-4 items-center">
+      <div className="max-w-[1920px] mx-auto p-6 flex flex-col lg:flex-row gap-6 items-center">
         {/* Search Section */}
-        <div className="search-container relative w-full lg:w-auto">
-          <div className="relative">
+        <div className="search-container relative w-full lg:w-1/3">
+          <motion.div 
+            className="relative"
+            whileHover={{ scale: 1.02 }}
+          >
             <input
               type="text"
               placeholder="Search stocks by symbol..."
-              className="w-full px-4 py-2 sm:py-3 bg-[#1A1A1A] rounded-lg text-[#FFB800] border border-[#10B981]/20 focus:border-[#FFB800] focus:outline-none text-sm sm:text-base"
+              className="w-full px-4 py-3 bg-[#252525] rounded-lg text-[#FFB800] border border-[#10B981]/20 focus:border-[#FFB800] focus:outline-none text-sm transition-all duration-300"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Escape") {
-                  setShowSearchResults(false);
-                }
-                if (e.key === "Enter") {
-                  handleSearch();
-                }
+                if (e.key === "Escape") setShowSearchResults(false);
+                if (e.key === "Enter") handleSearch();
               }}
             />
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleSearch()}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleSearch}
               disabled={loading}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#10B981] hover:bg-[#0D9668] text-white p-1.5 sm:p-2 rounded-lg transition-colors duration-200 disabled:opacity-50"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#10B981] hover:bg-[#0D9668] text-white p-2 rounded-lg transition-all duration-300 disabled:opacity-50"
             >
-              <FaSearch className="text-sm sm:text-base" />
+              <FaSearch className="text-base" />
             </motion.button>
-          </div>
+          </motion.div>
 
           <AnimatePresence>
             {showSearchResults && (
               <motion.ul
-                initial={{ opacity: 0, y: 5 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                className="absolute mt-2 w-full bg-[#1A1A1A] border border-[#10B981]/20 rounded-lg shadow-lg z-50 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#10B981] scrollbar-track-transparent"
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute mt-2 w-full bg-[#252525] border border-[#10B981]/20 rounded-lg shadow-xl z-50 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#10B981] scrollbar-track-[#1A1A1A]"
               >
                 {loading ? (
                   <li className="px-4 py-2 text-[#10B981] text-sm">Searching...</li>
@@ -207,7 +215,7 @@ export const StockHeader = () => {
                     <motion.li
                       key={result.symbol}
                       whileHover={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}
-                      className="px-4 py-2 cursor-pointer border-b border-[#10B981]/10 last:border-none"
+                      className="px-4 py-2 cursor-pointer border-b border-[#10B981]/10 last:border-none transition-all duration-300"
                       onClick={() => handleSelectResult(result.symbol)}
                     >
                       <div className="text-[#FFB800] font-bold text-sm">{result.symbol}</div>
@@ -226,10 +234,8 @@ export const StockHeader = () => {
 
         {/* Title Section */}
         <motion.h1 
-          className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          className="text-3xl lg:text-4xl font-bold text-center lg:w-1/3"
+          variants={fadeInUp}
         >
           <span className="text-white">Stock</span>
           <span className="text-[#10B981]"> Portfolio</span>
@@ -237,7 +243,7 @@ export const StockHeader = () => {
         </motion.h1>
 
         {/* Market Info Section */}
-        <div className="flex flex-wrap justify-center lg:justify-end items-center gap-2 sm:gap-4 w-full lg:w-auto">
+        <div className="flex flex-wrap justify-center lg:justify-end items-center gap-4 w-full lg:w-1/3">
           <MarketStatus marketStatus={marketStatus} />
           <SPIndex spIndex={spIndex} />
           <TradingVolume tradingVolume={tradingVolume} />
