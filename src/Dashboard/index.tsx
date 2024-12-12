@@ -26,42 +26,36 @@ export default function Dashboard() {
             <div className="flex-1 relative">
                 <div className="max-w-[1920px] mx-auto p-8">
                     <Tab.Group>
-                        <Tab.List className="flex space-x-4 p-1 bg-[#141414] rounded-xl mb-8">
+                        <Tab.List className="flex space-x-1 border border-[#2A2A2A] bg-[#141414] rounded-lg p-1 mb-8 w-fit">
                             <Tab className={({ selected }) =>
-                                `px-4 py-2 rounded-lg font-medium transition-all duration-200
-                                ${selected 
-                                    ? 'bg-[#10B981] text-white'
-                                    : 'text-[#10B981] hover:bg-[#10B981]/10'
+                                `px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
+        ${selected
+                                    ? 'bg-[#2A2A2A] text-white'
+                                    : 'text-gray-400 hover:text-white hover:bg-[#1A1A1A]'
                                 }`
                             }>
                                 Overview
                             </Tab>
                             <Tab disabled={isRegular} className={({ selected }) =>
-                                `px-3 py-2 rounded-lg font-medium transition-all duration-200
-                                ${selected 
-                                    ? 'bg-[#10B981] text-white'
-                                    : 'text-[#10B981] hover:bg-[#10B981]/10'
+                                `px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-1.5
+        ${selected
+                                    ? 'bg-[#2A2A2A] text-white'
+                                    : 'text-gray-400 hover:text-white hover:bg-[#1A1A1A]'
                                 }
-                                ${
-                                    isRegular && 'bg-app-gold-dark text-[#141414] hover:bg-[#ab7c02]'
-                                }
-                                `
+        ${isRegular && 'opacity-50 cursor-not-allowed'}`
                             }>
-                                <IoMdLock className="inline-block text-2xl pb-1 mr-1" />
+                                {isRegular && <IoMdLock className="text-lg" />}
                                 Transactions & Analytics
                             </Tab>
                             <Tab disabled={isRegular} className={({ selected }) =>
-                                `px-3 py-2 rounded-lg font-medium transition-all duration-200
-                                ${selected 
-                                    ? 'bg-[#10B981] text-white'
-                                    : 'text-[#10B981] hover:bg-[#10B981]/10'
+                                `px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-1.5
+        ${selected
+                                    ? 'bg-[#2A2A2A] text-white'
+                                    : 'text-gray-400 hover:text-white hover:bg-[#1A1A1A]'
                                 }
-                                ${
-                                    isRegular && 'bg-app-gold-dark text-[#141414] hover:bg-[#ab7c02]'
-                                }
-                                `
+        ${isRegular && 'opacity-50 cursor-not-allowed'}`
                             }>
-                                <IoMdLock className="inline-block text-2xl pb-1 mr-1" />
+                                {isRegular && <IoMdLock className="text-lg" />}
                                 Market & Real Estate
                             </Tab>
                         </Tab.List>

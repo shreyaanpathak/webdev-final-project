@@ -189,15 +189,12 @@ export const StockHeader = () => {
                 if (e.key === "Enter") handleSearch();
               }}
             />
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={handleSearch}
+            <button
               disabled={loading}
               className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#10B981] hover:bg-[#0D9668] text-white p-2 rounded-lg transition-all duration-300 disabled:opacity-50"
             >
               <FaSearch className="text-base" />
-            </motion.button>
+            </button>
           </motion.div>
 
           <AnimatePresence>

@@ -4,28 +4,71 @@ import { Link } from 'react-router-dom';
 import { Parallax } from 'react-parallax';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getPortfolioSummary, getTransactions, type PortfolioSummary, type Transaction } from '../Dashboard/client';
+import { getPortfolio, getTransactions, type PortfolioSummary, type Transaction } from '../Dashboard/client';
 import { getMarketOverview } from '../Stocks/client';
 
 
 const PortfolioSummarySection = () => {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [summary, setSummary] = useState<PortfolioSummary | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchSummary = async () => {
             if (!currentUser?._id) return;
+
             try {
-                const data = await getPortfolioSummary(currentUser._id);
-                setSummary(data);
+                setLoading(true);
+                setError(null);
+
+                const [portfolioData, performanceData] = await Promise.all([
+                    getPortfolio(currentUser._id),
+                    getTransactions(currentUser._id).catch(err => {
+                        console.error("Performance fetch error:", err);
+                        return {
+                            total_gain_loss: 0,
+                            total_gain_loss_percentage: 0,
+                            realized_gains: 0,
+                            unrealized_gains: 0,
+                            total_invested: 0
+                        };
+                    })
+                ]);
+
+                setSummary({
+                    total_value: portfolioData.total_value || 0,
+                    total_gain_loss: performanceData.total_gain_loss || 0,
+                    total_gain_loss_percentage: performanceData.total_gain_loss_percentage || 0,
+                    positions: portfolioData.positions || [],
+                    realized_gains: performanceData.realized_gains || 0,
+                    unrealized_gains: performanceData.unrealized_gains || 0,
+                    total_invested: performanceData.total_invested || 0
+                });
+
             } catch (error) {
                 console.error('Failed to fetch portfolio summary:', error);
+                setError(error instanceof Error ? error.message : "Failed to load portfolio data");
+            } finally {
+                setLoading(false);
             }
         };
+
         fetchSummary();
+        // Refresh every 30 seconds
+        const interval = setInterval(fetchSummary, 30000);
+        return () => clearInterval(interval);
     }, [currentUser?._id]);
 
-    if (!summary) return <div className="text-gray-400">Loading summary...</div>;
+    if (loading) {
+        return <div className="text-gray-400">Loading summary...</div>;
+    }
+
+    if (error) {
+        return <div className="text-red-500">{error}</div>;
+    }
+
+    if (!summary) return null;
 
     return (
         <>
@@ -39,7 +82,8 @@ const PortfolioSummarySection = () => {
                 <div className="stat bg-black/20 col-span-1 rounded-lg p-4">
                     <div className="stat-title text-gray-400">Total Gain/Loss</div>
                     <div className={`stat-value text-sm ${summary.total_gain_loss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                        {summary.total_gain_loss_percentage.toFixed(2)}%
+                        {summary.total_gain_loss_percentage >= 0 ? '+' : '-'}
+                        {Math.abs(summary.total_gain_loss_percentage).toFixed(2)}%
                     </div>
                 </div>
             </div>
@@ -67,11 +111,11 @@ const MarketOverview = () => {
                 console.error('Failed to fetch market overview:', error);
             }
         };
-        
+
         fetchMarketData();
         // Refresh every minute
         const interval = setInterval(fetchMarketData, 60000);
-        
+
         return () => clearInterval(interval);
     }, []);
 
@@ -130,10 +174,10 @@ const CollapsiblePortfolioCard = () => {
                                     </svg>
                                 </button>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 <MarketOverview />
-                                
+
                                 {currentUser && (
                                     <>
                                         <div className="border-t border-gray-700 my-4" />
@@ -153,17 +197,17 @@ const CollapsiblePortfolioCard = () => {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                     >
-                        <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            className="h-6 w-6 text-white" 
-                            fill="none" 
-                            viewBox="0 0 24 24" 
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
                             stroke="currentColor"
                         >
-                            <path 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                strokeWidth={2} 
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
                                 d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
                             />
                         </svg>
@@ -257,13 +301,13 @@ export default function Home() {
                         strength={200}
                         className="relative"
                     >
-                        <div className="min-h-screen flex items-center justify-center relative">
+                        <div className="min-h-screen flex items-center justify-center relative px-4 sm:px-6">
                             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
                             {/* User Profile Panel */}
                             <CollapsiblePortfolioCard />
                             <motion.div
-                                className="text-center px-6 relative z-10"
+                                className="text-center relative z-10 w-full"
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{
@@ -274,7 +318,7 @@ export default function Home() {
                             >
                                 <div className="max-w-4xl mx-auto">
                                     <motion.h1
-                                        className="text-8xl font-bold mb-8 leading-tight"
+                                        className="text-4xl sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-8 leading-tight"
                                         initial={{ scale: 0.95 }}
                                         animate={{ scale: 1 }}
                                         transition={{ duration: 0.5 }}
@@ -299,7 +343,7 @@ export default function Home() {
                                         </motion.span>
                                     </motion.h1>
                                     <motion.p
-                                        className="text-2xl text-gray-400 mb-12"
+                                        className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-8 sm:mb-12 max-w-3xl mx-auto"
                                         variants={fadeInUp}
                                         initial="hidden"
                                         animate="visible"
@@ -308,21 +352,21 @@ export default function Home() {
                                         and expert analysis. Join thousands of investors making smarter decisions with our
                                         cutting-edge platform.
                                     </motion.p>
-                                    <div className="flex justify-center gap-6">
-                                        <Link to={currentUser ? "/Dashboard" : "/Account/Signup"}>
+                                    <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+                                        <Link to={currentUser ? "/Dashboard" : "/Account/Signup"} className="w-full sm:w-auto">
                                             <motion.button
                                                 whileHover={{ scale: 1.05 }}
                                                 whileTap={{ scale: 0.95 }}
-                                                className="btn btn-lg bg-green-600 hover:bg-green-700 text-white border-0 px-8"
+                                                className="btn btn-lg bg-green-600 hover:bg-green-700 text-white border-0 px-8 w-full sm:w-auto"
                                             >
                                                 Get Started
                                             </motion.button>
                                         </Link>
-                                        <Link to="/Dashboard">
+                                        <Link to="/Dashboard" className="w-full sm:w-auto">
                                             <motion.button
                                                 whileHover={{ scale: 1.05 }}
                                                 whileTap={{ scale: 0.95 }}
-                                                className="btn btn-lg btn-outline text-yellow-500 hover:bg-yellow-500 hover:text-base-100 px-8"
+                                                className="btn btn-lg btn-outline text-yellow-500 hover:bg-yellow-500 hover:text-base-100 px-8 w-full sm:w-auto"
                                             >
                                                 Explore Dashboard
                                             </motion.button>

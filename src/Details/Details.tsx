@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 import { FaStar, FaRobot, FaExchangeAlt } from "react-icons/fa";
 import { Chart } from "../Stocks/Chart";
 import * as client from "../Stocks/client"; // Changed from stocksClient to client
+import { useSelector } from "react-redux";
+import type { RootState } from "../store";
+import { IoMdLock } from "react-icons/io";
 
 interface StockDetails {
   symbol: string;
@@ -33,6 +36,8 @@ interface OptionContract {
 }
 
 export default function Details() {
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const isRegular = currentUser?.membership === 'REGULAR';
   const { symbol } = useParams<{ symbol: string }>();
   const [stockData, setStockData] = useState<StockDetails | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
@@ -41,6 +46,16 @@ export default function Details() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const lorem: any = `Lorem ipsum odor amet, consectetuer adipiscing elit. Orci diam efficitur semper fermentum mi est quisque torquent. Dictumst nisl aptent euismod habitant tincidunt tellus auctor neque. Lobortis dolor diam fringilla mi proin. Mi cras aliquet iaculis semper dignissim penatibus! Luctus eget ut arcu quam donec pharetra. Platea vestibulum cubilia lacus nibh ridiculus metus donec pellentesque. Justo vel placerat nascetur sagittis euismod.
+
+Posuere urna dictumst vehicula eros aliquet nam interdum semper. Fermentum sagittis felis tempus nascetur nisl dolor sed. Arcu consequat lorem convallis; at viverra nisl blandit. Sem ut adipiscing porta pharetra ullamcorper consectetur, mi viverra. Tempus nullam class gravida pharetra proin fusce; conubia efficitur. Velit lobortis tristique commodo eleifend viverra viverra gravida? Aptent arcu maecenas quisque cras, volutpat imperdiet cursus. Per adipiscing ligula erat conubia mus sit hendrerit fusce. Nibh eleifend convallis consectetur integer hac potenti.
+
+Curabitur mauris nullam congue aliquet donec porta. Morbi fames amet primis fermentum proin vel maecenas torquent scelerisque. Massa class per etiam a ante. Dis ut et ad malesuada mattis vel fames. Cursus fames dapibus tincidunt pellentesque tempor sem facilisi augue. Dis ullamcorper rhoncus pretium; non proin consectetur. Malesuada volutpat praesent fringilla ac elementum faucibus donec. Nam potenti praesent magnis nisl; elementum quam porttitor nunc. Erat ante ultrices feugiat platea id conubia.
+
+Proin arcu ridiculus class nulla maecenas rutrum lectus. Diam metus neque quisque class ultricies quisque lectus. Donec ullamcorper sed habitasse, sagittis massa fames turpis. Dui hac class ut nascetur rutrum enim ridiculus ex quisque. Elit vehicula vivamus auctor sollicitudin magnis metus elit. Rhoncus maecenas blandit posuere ac fermentum quis taciti. Aptent lacus tristique inceptos pharetra consectetur scelerisque.
+
+Fames penatibus eros magnis platea ultrices nascetur, quam nibh integer. Pretium ullamcorper sagittis posuere, dolor felis proin taciti blandit. Nascetur at sollicitudin quam elit est malesuada proin. Quisque vulputate vitae ac aenean cras scelerisque himenaeos facilisis. Taciti maximus laoreet id venenatis quisque tincidunt. Venenatis nisi auctor accumsan quis adipiscing sem himenaeos. Facilisi pulvinar scelerisque adipiscing finibus dolor efficitur congue?`
 
   const fetchData = async () => {
     if (!symbol) {
@@ -74,7 +89,7 @@ export default function Details() {
           Today's change: ${quote.change} (${quote.percentChange}%)
         `;
 
-        const analysis = await client.getChatAnalysis(analysisPrompt);
+        const analysis = !isRegular ? await client.getChatAnalysis(analysisPrompt) : lorem;
         setAiAnalysis(analysis);
       } catch (analysisError) {
         console.error("AI Analysis error:", analysisError);
@@ -177,9 +192,8 @@ export default function Details() {
                 ${stockData.price.toFixed(2)}
               </div>
               <div
-                className={`text-xl ${
-                  stockData.change >= 0 ? "text-[#10B981]" : "text-[#EF4444]"
-                }`}
+                className={`text-xl ${stockData.change >= 0 ? "text-[#10B981]" : "text-[#EF4444]"
+                  }`}
               >
                 {stockData.change >= 0 ? "↑" : "↓"}
                 {Math.abs(stockData.change).toFixed(2)} (
@@ -239,8 +253,7 @@ export default function Details() {
                 <FaRobot className="text-2xl text-[#FFB800] animate-pulse" />
               </div>
               <h3 className="text-2xl font-bold text-[#FFB800]">AI Analysis</h3>
-            </div>
-            <motion.button
+            </div><motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => fetchData()}
@@ -264,60 +277,68 @@ export default function Details() {
           </div>
 
           <div className="space-y-6">
-            {loading ? (
-              <div className="flex items-center justify-center p-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#10B981]"></div>
-                <span className="ml-3 text-[#10B981]">
-                  Generating analysis...
-                </span>
-              </div>
-            ) : aiAnalysis ? (
-              <div className="grid gap-6">
-                {aiAnalysis.split("\n\n").map((section, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-[#0D1F17] rounded-xl p-6 border border-[#10B981]/10 hover:border-[#10B981]/30 transition-all duration-300"
-                  >
-                    {section.split("\n").map((paragraph, pIndex) => {
-                      // Check if the paragraph is a header (starts with a number followed by a dot)
-                      const isHeader = /^\d+\./.test(paragraph);
+            <div className="relative">
+              {isRegular && (
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                  <IoMdLock className="text-[100px]" />
+                </div>
+              )}
+              {loading ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#10B981]"></div>
+                  <span className="ml-3 text-[#10B981]">
+                    Generating analysis...
+                  </span>
+                </div>
+              ) : aiAnalysis ? (
+                <div className="grid gap-6 blur-sm">
 
-                      return (
-                        <div key={pIndex} className={pIndex > 0 ? "mt-4" : ""}>
-                          {isHeader ? (
-                            <h4 className="text-[#FFB800] font-bold text-lg mb-3">
-                              {paragraph}
-                            </h4>
-                          ) : (
-                            <p className="text-[#10B981]/90 leading-relaxed">
-                              {paragraph.startsWith("•") ? (
-                                <span className="flex items-start">
-                                  <span className="text-[#FFB800] mr-2">•</span>
-                                  {paragraph.substring(1)}
-                                </span>
-                              ) : (
-                                paragraph
-                              )}
-                            </p>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </motion.div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center p-8 bg-[#0D1F17] rounded-xl border border-[#10B981]/10">
-                <FaRobot className="text-4xl text-[#10B981]/40 mx-auto mb-4" />
-                <p className="text-[#10B981]/80">
-                  No analysis available at this time. Click refresh to generate
-                  new insights.
-                </p>
-              </div>
-            )}
+                  {aiAnalysis.split("\n\n").map((section, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-[#0D1F17] rounded-xl p-6 border border-[#10B981]/10 hover:border-[#10B981]/30 transition-all duration-300"
+                    >
+                      {section.split("\n").map((paragraph, pIndex) => {
+                        // Check if the paragraph is a header (starts with a number followed by a dot)
+                        const isHeader = /^\d+\./.test(paragraph);
+
+                        return (
+                          <div key={pIndex} className={pIndex > 0 ? "mt-4" : ""}>
+                            {isHeader ? (
+                              <h4 className="text-[#FFB800] font-bold text-lg mb-3">
+                                {paragraph}
+                              </h4>
+                            ) : (
+                              <p className="text-[#10B981]/90 leading-relaxed">
+                                {paragraph.startsWith("•") ? (
+                                  <span className="flex items-start">
+                                    <span className="text-[#FFB800] mr-2">•</span>
+                                    {paragraph.substring(1)}
+                                  </span>
+                                ) : (
+                                  paragraph
+                                )}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center p-8 bg-[#0D1F17] rounded-xl border border-[#10B981]/10">
+                  <FaRobot className="text-4xl text-[#10B981]/40 mx-auto mb-4" />
+                  <p className="text-[#10B981]/80">
+                    No analysis available at this time. Click refresh to generate
+                    new insights.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </motion.div>
       </div>
