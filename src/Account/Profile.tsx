@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
 import {
   FaChartLine,
   FaBriefcase,
@@ -16,6 +15,9 @@ import {
   FaMapMarker,
   FaClock,
 } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import * as client from "./client";
 
 const MotionStats = ({ children }) => (
   <motion.div
@@ -109,10 +111,29 @@ const ContactSection = ({ info }) => (
 );
 
 export default function EnhancedProfile() {
+  const [profileData, setProfileData] = useState(null);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [activeTab, setActiveTab] = useState("overview");
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (currentUser?._id) {
+        try {
+          const data = await client.profile(currentUser._id);
+          setProfileData(data);
+        } catch (error) {
+          console.error("Failed to fetch profile:", error);
+        }
+      }
+    };
+    fetchProfile();
+  }, [currentUser?._id]);
+
+  const fullName = profileData ? `${profileData.firstName} ${profileData.lastName}` : "Loading...";
+  const userRole = profileData?.role || "Loading...";
+
   const overview = {
-    summary: `A visionary financial advisor with over 15 years of experience in wealth management and strategic financial planning. Specializing in high-net-worth portfolio management and comprehensive retirement strategies. Dedicated to providing personalized financial solutions that align with clients' long-term goals while maintaining a strong focus on risk management and sustainable growth.`,
+    summary: `A ${profileData?.membership || ""} member financial advisor with over 15 years of experience in wealth management and strategic financial planning. Specializing in high-net-worth portfolio management and comprehensive retirement strategies. Dedicated to providing personalized financial solutions that align with clients' long-term goals while maintaining a strong focus on risk management and sustainable growth.`,
     expertise: [
       "Portfolio optimization and asset allocation",
       "Retirement planning and wealth preservation",
@@ -164,7 +185,7 @@ export default function EnhancedProfile() {
       name: "Michael Thompson",
       role: "CEO, Thompson Enterprises",
       content:
-        "Sarah's strategic approach to wealth management has been transformative for our company's financial portfolio. Her insights have consistently led to outstanding results.",
+        profileData?.firstName + "'s strategic approach to wealth management has been transformative for our company's financial portfolio. Her insights have consistently led to outstanding results.",
       image:
         "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
     },
@@ -172,7 +193,7 @@ export default function EnhancedProfile() {
       name: "Jennifer Roberts",
       role: "Founder, Tech Innovations",
       content:
-        "Working with Sarah has been incredibly valuable. Her deep understanding of market trends and risk management strategies helped us navigate complex investment decisions.",
+        "Working with " + profileData?.firstName + " has been incredibly valuable. Her deep understanding of market trends and risk management strategies helped us navigate complex investment decisions.",
       image:
         "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
     },
@@ -180,18 +201,18 @@ export default function EnhancedProfile() {
       name: "David Chen",
       role: "Private Client",
       content:
-        "Sarah's personalized approach to financial planning has helped me achieve my retirement goals ahead of schedule. Her dedication to her clients is truly exceptional.",
+        profileData?.firstName + "'s personalized approach to financial planning has helped me achieve my retirement goals ahead of schedule. Her dedication to her clients is truly exceptional.",
       image:
         "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
     },
   ];
 
   const contactInfo = {
-    email: "sarah.mitchell@financepro.com",
+    email: profileData?.email || "Loading...",
     phone: "+1 (555) 123-4567",
     location: "New York City, NY",
     availability: "Monday - Friday: 9:00 AM - 5:00 PM EST",
-    schedule: "https://calendly.com/sarahmitchell",
+    schedule: "https://calendly.com/"+profileData?.username,
     office: "123 Wall Street, Suite 500, New York, NY 10005",
   };
 
@@ -278,18 +299,18 @@ export default function EnhancedProfile() {
               <div className="text-center">
                 <motion.h1
                   className="text-4xl font-bold bg-gradient-to-r from-green-500 to-yellow-500 
-                            bg-clip-text text-transparent"
+                    bg-clip-text text-transparent"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
-                  Sarah Mitchell
+                  {fullName}
                 </motion.h1>
                 <motion.p
                   className="text-xl text-yellow-500/80 mt-2"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  Senior Financial Advisor
+                  {userRole}
                 </motion.p>
               </div>
 
@@ -367,11 +388,10 @@ export default function EnhancedProfile() {
                 {["overview", "projects", "testimonials", "contact"].map((tab) => (
                   <motion.button
                     key={tab}
-                    className={`px-4 py-2 rounded-lg ${
-                      activeTab === tab
+                    className={`px-4 py-2 rounded-lg ${activeTab === tab
                         ? "bg-green-600 text-white"
                         : "text-green-500 hover:text-yellow-500"
-                    }`}
+                      }`}
                     onClick={() => setActiveTab(tab)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
