@@ -1,4 +1,3 @@
-// src/Stock/components/Chart.tsx
 import { useState, useEffect, useRef } from "react";
 import { Line as ChartLine } from "react-chartjs-2";
 import { motion } from "framer-motion";
@@ -40,19 +39,38 @@ const TimeframeButton = ({ timeframe, isSelected, onClick }) => (
 
 export const Chart = ({ selectedStock }) => {
   const [timeframe, setTimeframe] = useState("1D");
+  const [chartData, setChartData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const chartRef = useRef(null);
 
-  const chartData = {
-    labels: ["9:30", "10:30", "11:30", "12:30", "13:30", "14:30", "15:30", "16:00"],
-    datasets: [{
-      label: selectedStock || "Price",
-      data: [65, 59, 80, 81, 56, 55, 72, 68],
-      borderColor: "#FFD700",
-      backgroundColor: "rgba(255, 215, 0, 0.1)",
-      fill: true,
-      tension: 0.4,
-    }],
-  };
+  useEffect(() => {
+    const fetchHistoricalData = async () => {
+      if (!selectedStock) return;
+      
+      try {
+        setLoading(true);
+        const data = await getHistoricalPrices(selectedStock, timeframe);
+        
+        setChartData({
+          labels: data.labels,
+          datasets: [{
+            label: selectedStock,
+            data: data.prices,
+            borderColor: "#FFD700",
+            backgroundColor: "rgba(255, 215, 0, 0.1)",
+            fill: true,
+            tension: 0.4,
+          }],
+        });
+      } catch (error) {
+        console.error("Failed to fetch historical data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistoricalData();
+  }, [selectedStock, timeframe]);
 
   const options = {
     responsive: true,
@@ -72,7 +90,6 @@ export const Chart = ({ selectedStock }) => {
     },
   };
 
-  // Destroy chart instance when component unmounts
   useEffect(() => {
     return () => {
       if (chartRef.current) {
@@ -97,11 +114,21 @@ export const Chart = ({ selectedStock }) => {
         </div>
       </div>
       <div className="h-[500px] relative">
-        <ChartLine
-          ref={chartRef}
-          data={chartData}
-          options={options}
-        />
+        {loading ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-[#10B981]">Loading chart data...</div>
+          </div>
+        ) : chartData ? (
+          <ChartLine
+            ref={chartRef}
+            data={chartData}
+            options={options}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-[#10B981]">Select a stock to view price history</div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

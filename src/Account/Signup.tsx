@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import * as client from './client';
+import { setLoading, setError } from './reducer';
 
 export default function SignUp() {
-    // Steps: 1 = Basic Info (Username/Email), 2 = Personal Info (Name/DOB), 3 = SSN/Password, 4 = Review/Submit
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    
     const [step, setStep] = useState(1);
 
     // Form values
@@ -48,9 +53,24 @@ export default function SignUp() {
         setStep(prev => prev - 1);
     };
 
-    const handleSubmit = () => {
-        // Final submission logic goes here
-        console.log("Submitting:", formData);
+    const handleSubmit = async () => {
+        try {
+            dispatch(setLoading(true));
+            await client.signup({
+                username: formData.username,
+                email: formData.email,
+                password: formData.password,
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                dob: formData.dob,
+                socialsecurity: formData.ssn
+            });
+            navigate("/Account/Signin");
+        } catch (err: any) {
+            dispatch(setError(err.response?.data?.detail || "Signup failed"));
+        } finally {
+            dispatch(setLoading(false));
+        }
     };
 
     return (

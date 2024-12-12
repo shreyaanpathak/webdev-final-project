@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from '../Account/reducer';
@@ -7,10 +7,16 @@ import * as client from '../Account/client';
 export default function Navbar() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await client.signout();
-    dispatch(setCurrentUser(null));
+    try {
+      await client.signout();
+      dispatch(setCurrentUser(null));
+      navigate("/");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   return (

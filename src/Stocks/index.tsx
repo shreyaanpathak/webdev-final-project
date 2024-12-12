@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FaChartLine, FaRobot, FaBell, FaLock } from "react-icons/fa";
@@ -7,16 +7,56 @@ import { StockHeader } from "./StockHeader";
 import { QuickTradeGrid } from "./QuickTradeGrid";
 import { MainTradingArea } from "./MainTradingArea";
 import { RightColumn } from "./RightColumn";
-import { Chart } from "./Chart";
+import { Chart } from "./Chart"; 
 import { GoldModal } from "./GoldModal";
+import * as stocksClient from "./client";
+import { updateQuote, updatePortfolio, setSelectedStock } from "./stockReducer";
 
 export default function Stock() {
-  const { selectedStock, quotes, portfolio, cash, watchlist } = 
-    useSelector((state: any) => state.stocksReducer);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const dispatch = useDispatch();
+  const { selectedStock, quotes, portfolio, cash, watchlist, currentUser } = 
+    useSelector((state: any) => ({
+      ...state.stocksReducer,
+      currentUser: state.accountReducer.currentUser
+    }));
+
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showGoldModal, setShowGoldModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    const fetchQuote = async () => {
+      if (selectedStock) {
+        try {
+          const quote = await stocksClient.getQuote(selectedStock);
+          dispatch(updateQuote(quote));
+        } catch (error) {
+          console.error("Failed to fetch quote:", error);
+        }
+      }
+    };
+
+    fetchQuote();
+    const interval = setInterval(fetchQuote, 30000);
+    return () => clearInterval(interval);
+  }, [selectedStock, dispatch]);
+
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      if (currentUser?._id) {
+        try {
+          const portfolio = await stocksClient.getPortfolio(currentUser._id);
+          dispatch(updatePortfolio(portfolio));
+        } catch (error) {
+          console.error("Failed to fetch portfolio:", error);
+        }
+      }
+    };
+
+    fetchPortfolio();
+  }, [currentUser, dispatch]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -30,7 +70,6 @@ export default function Stock() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Limited view for non-authenticated users
   if (!currentUser) {
     return (
       <>
@@ -58,7 +97,6 @@ export default function Stock() {
               </motion.p>
             </div>
 
-            {/* Preview Chart with Blur Overlay */}
             <div className="mb-12 relative rounded-xl overflow-hidden">
               <Chart selectedStock="AAPL" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
@@ -149,7 +187,6 @@ export default function Stock() {
     );
   }
 
-  // Full view for authenticated users
   return (
     <div className="min-h-screen bg-[#111111] flex flex-col">
       <StockHeader 
@@ -157,23 +194,48 @@ export default function Stock() {
         setSearchQuery={setSearchQuery}
         showSearchResults={showSearchResults}
         setShowSearchResults={setShowSearchResults}
+        onSearch={async () => {
+          if (!searchQuery.trim()) return;
+          try {
+            setLoading(true);
+            const results = await stocksClient.searchStocks(searchQuery);
+            setSearchResults(results);
+            setShowSearchResults(true);
+          } catch (error) {
+            console.error("Search failed:", error);
+          } finally {
+            setLoading(false);
+          }
+        }}
+        searchResults={searchResults}
+        onSelectStock={(symbol: string) => {
+          dispatch(setSelectedStock(symbol));
+          setShowSearchResults(false);
+          setSearchQuery("");
+        }}
+        loading={loading}
       />
       
       <div className="flex-1">
         <div className="max-w-[1920px] mx-auto p-6">
-          <QuickTradeGrid quotes={quotes} />
+          <QuickTradeGrid 
+            quotes={quotes}
+            loading={loading}
+          />
           
           <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
             <MainTradingArea 
               selectedStock={selectedStock}
               quotes={quotes}
               watchlist={watchlist}
+              loading={loading}
             />
             <RightColumn 
               portfolio={portfolio}
               cash={cash}
               watchlist={watchlist}
               quotes={quotes}
+              loading={loading}
             />
           </div>
         </div>

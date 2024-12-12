@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { BiKey } from 'react-icons/bi';
 import * as client from './client';
 import { setCurrentUser, setError, setLoading } from './reducer';
 
@@ -14,15 +13,18 @@ export default function Signin() {
     const [credentials, setCredentials] = useState({ username: "", password: "" });
 
     const handleSignin = async () => {
-        try {
-            dispatch(setLoading(true));
-            const user = await client.signin(credentials);
-            dispatch(setCurrentUser(user));
-            navigate("/dashboard");
-        } catch (err: any) {
-            dispatch(setError(err.message));
-        }
-    };
+      try {
+          dispatch(setLoading(true));
+          const user = await client.signin(credentials);
+          dispatch(setCurrentUser(user));
+          navigate("/dashboard");
+      } catch (err: any) {
+          console.error("Login error:", err);
+          dispatch(setError(err.message || "Login failed"));
+      } finally {
+          dispatch(setLoading(false));
+      }
+  };
 
     // Animation variants
     const containerVariants = {

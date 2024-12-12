@@ -1,44 +1,33 @@
-import { dummyUsers } from "./dummyData";
+import { api } from "../config";
 
 export const signin = async (credentials: { username: string; password: string }) => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const user = dummyUsers.find(
-    (u) => u.username === credentials.username && u.password === credentials.password
-  );
-  
-  if (!user) {
-    throw new Error("Invalid credentials");
+  try {
+    const response = await api.post("/auth/signin", credentials);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(error.response.data.detail || "Login failed");
+    }
+    throw new Error("Network error occurred");
   }
-  
-  const { password, ...userWithoutPassword } = user;
-  localStorage.setItem("currentUser", JSON.stringify(userWithoutPassword));
-  return userWithoutPassword;
+};
+
+export const signup = async (userData) => {
+  const response = await api.post("/auth/signup", userData);
+  return response.data;
 };
 
 export const signout = async () => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  localStorage.removeItem("currentUser");
+  const response = await api.get("/auth/signout");
+  return response.data;
 };
 
-export const profile = async () => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  const currentUser = localStorage.getItem("currentUser");
-  if (currentUser) {
-    return JSON.parse(currentUser);
+export const profile = async (userId: string) => {
+  try {
+    const response = await api.get(`/auth/profile/${userId}`); // Removed extra 'api'
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch profile:", error);
+    return null;
   }
-  return null;
-};
-
-export const updateUser = async (updates: any) => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const userIndex = dummyUsers.findIndex(u => u.username === updates.username);
-  if (userIndex >= 0) {
-    dummyUsers[userIndex] = { ...dummyUsers[userIndex], ...updates };
-    const { password, ...userWithoutPassword } = dummyUsers[userIndex];
-    localStorage.setItem("currentUser", JSON.stringify(userWithoutPassword));
-    return userWithoutPassword;
-  }
-  throw new Error("User not found");
 };

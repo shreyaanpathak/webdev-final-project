@@ -28,3 +28,4 @@ const accountSlice = createSlice({
 export const { setCurrentUser, setError, setLoading } = accountSlice.actions;
 export default accountSlice.reducer;
 
+
