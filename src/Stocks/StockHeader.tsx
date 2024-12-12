@@ -29,22 +29,38 @@ const InfoBox = ({ title, value, color }) => (
   </motion.div>
 );
 
-const TradingVolume = ({ tradingVolume }) => (
-  <InfoBox
-    title="Trading Volume"
-    value={tradingVolume ? `${(tradingVolume / 1e6).toFixed(2)}M` : "N/A"}
-    color="[#10B981]"
-  />
-);
-
 const SPIndex = ({ spIndex }) => {
-  const value = spIndex?.value ?? 4783.45;
-  const changePercent = spIndex?.changePercent ?? 1.2;
+  if (!spIndex) {
+    return <InfoBox title="S&P 500" value="Loading..." color="[#FFB800]" />;
+  }
+
+  const changeColor = spIndex.changePercent >= 0 ? "#10B981" : "#EF4444";
+  return (
+    <InfoBox
+      title="S&P 500"
+      value={
+        <>
+          {spIndex.value.toLocaleString()}{" "}
+          <span style={{ color: changeColor }}>
+            {spIndex.changePercent > 0
+              ? `+${spIndex.changePercent.toFixed(2)}%`
+              : `${spIndex.changePercent.toFixed(2)}%`}
+          </span>
+        </>
+      }
+      color="[#FFB800]"
+    />
+  );
+};
+
+const DowIndex = ({ dowIndex }) => {
+  const value = dowIndex?.value ?? 0;
+  const changePercent = dowIndex?.changePercent ?? 0;
   const changeColor = changePercent >= 0 ? "#10B981" : "#EF4444";
 
   return (
     <InfoBox
-      title="S&P 500"
+      title="Dow Jones"
       value={
         <>
           {value.toLocaleString()}{" "}
@@ -55,7 +71,7 @@ const SPIndex = ({ spIndex }) => {
           </span>
         </>
       }
-      color="[#FFB800]"
+      color="[#6366F1]"
     />
   );
 };
@@ -67,7 +83,11 @@ const MarketStatus = ({ marketStatus }) => (
       <div className="flex items-center gap-2">
         <span
           className={`w-2 h-2 rounded-full ${
-            marketStatus === "Open" ? "bg-[#10B981]" : "bg-[#EF4444]"
+            marketStatus === "Open"
+              ? "bg-[#10B981]"
+              : marketStatus === "Unknown"
+              ? "bg-[#FFB800]"
+              : "bg-[#EF4444]"
           }`}
         />
         {marketStatus}
@@ -89,23 +109,31 @@ export const StockHeader = () => {
     value: number;
     changePercent: number;
   } | null>(null);
-  const [tradingVolume, setTradingVolume] = useState<number | null>(null);
+  const [dowIndex, setDowIndex] = useState<{
+    value: number;
+    changePercent: number;
+  } | null>(null);
 
   useEffect(() => {
     const fetchMarketOverview = async () => {
       try {
         const overview = await client.getMarketOverview();
-        setMarketStatus(overview.market_open ? "Open" : "Closed");
-        setSPIndex(overview.sp500);
+        setMarketStatus(overview.market_status);
+        setSPIndex({
+          value: overview.sp500.value,
+          changePercent: overview.sp500.changePercent,
+        });
         setTradingVolume(overview.tradingVolume);
       } catch (error) {
         console.error("Failed to fetch market overview:", error);
         setMarketStatus("Unknown");
+        setSPIndex(null);
+        setTradingVolume(null);
       }
     };
 
     fetchMarketOverview();
-    const interval = setInterval(fetchMarketOverview, 60000);
+    const interval = setInterval(fetchMarketOverview, 60000); // Update every minute
     return () => clearInterval(interval);
   }, []);
 
@@ -169,6 +197,32 @@ export const StockHeader = () => {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+      const fetchMarketOverview = async () => {
+          try {
+              const overview = await client.getMarketOverview();
+              setMarketStatus(overview.market_status || "Unknown");
+              setSPIndex({
+                  value: overview.sp500?.value || 0,
+                  changePercent: overview.sp500?.changePercent || 0
+              });
+              setDowIndex({
+                  value: overview.dow?.value || 0,
+                  changePercent: overview.dow?.changePercent || 0
+              });
+          } catch (error) {
+              console.error("Failed to fetch market overview:", error);
+              setMarketStatus("Unknown");
+              setSPIndex(null);
+              setDowIndex(null);
+          }
+      };
+  
+      fetchMarketOverview();
+      const interval = setInterval(fetchMarketOverview, 60000);
+      return () => clearInterval(interval);
+  }, []);
 
   return (
     <motion.div
@@ -200,47 +254,47 @@ export const StockHeader = () => {
               <FaSearch className="text-base" />
             </button>
 
-          <AnimatePresence>
-            {showSearchResults && (
-              <motion.ul
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute mt-2 w-full bg-[#252525] border border-[#10B981]/20 rounded-lg shadow-xl z-50 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#10B981] scrollbar-track-[#1A1A1A]"
-              >
-                {loading ? (
-                  <li className="px-4 py-2 text-[#10B981] text-sm">
-                    Searching...
-                  </li>
-                ) : searchResults.length > 0 ? (
-                  searchResults.map((result) => (
-                    <motion.li
-                      key={result.symbol}
-                      whileHover={{
-                        backgroundColor: "rgba(16, 185, 129, 0.1)",
-                      }}
-                      className="px-4 py-2 cursor-pointer border-b border-[#10B981]/10 last:border-none transition-all duration-300"
-                      onClick={() => handleSelectResult(result.symbol)}
-                    >
-                      <div className="text-[#FFB800] font-bold text-sm">
-                        {result.symbol}
-                      </div>
-                      <div className="text-[#10B981] text-xs">
-                        {result.name}
-                      </div>
-                    </motion.li>
-                  ))
-                ) : (
-                  searchQuery.trim() && (
+            <AnimatePresence>
+              {showSearchResults && (
+                <motion.ul
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute mt-2 w-full bg-[#252525] border border-[#10B981]/20 rounded-lg shadow-xl z-50 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#10B981] scrollbar-track-[#1A1A1A]"
+                >
+                  {loading ? (
                     <li className="px-4 py-2 text-[#10B981] text-sm">
-                      No results found
+                      Searching...
                     </li>
-                  )
-                )}
-              </motion.ul>
-            )}
-          </AnimatePresence>
-        </div>
+                  ) : searchResults.length > 0 ? (
+                    searchResults.map((result) => (
+                      <motion.li
+                        key={result.symbol}
+                        whileHover={{
+                          backgroundColor: "rgba(16, 185, 129, 0.1)",
+                        }}
+                        className="px-4 py-2 cursor-pointer border-b border-[#10B981]/10 last:border-none transition-all duration-300"
+                        onClick={() => handleSelectResult(result.symbol)}
+                      >
+                        <div className="text-[#FFB800] font-bold text-sm">
+                          {result.symbol}
+                        </div>
+                        <div className="text-[#10B981] text-xs">
+                          {result.name}
+                        </div>
+                      </motion.li>
+                    ))
+                  ) : (
+                    searchQuery.trim() && (
+                      <li className="px-4 py-2 text-[#10B981] text-sm">
+                        No results found
+                      </li>
+                    )
+                  )}
+                </motion.ul>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Title Section */}
@@ -268,7 +322,7 @@ export const StockHeader = () => {
         <div className="flex flex-wrap justify-center lg:justify-end items-center gap-3 w-full lg:w-[30%]">
           <MarketStatus marketStatus={marketStatus} />
           <SPIndex spIndex={spIndex} />
-          <TradingVolume tradingVolume={tradingVolume} />
+          <DowIndex dowIndex={dowIndex} />
         </div>
       </div>
     </motion.div>

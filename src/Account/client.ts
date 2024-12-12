@@ -13,6 +13,33 @@ export interface ContactSectionProps {
   onSave: (fieldName: string, value: string) => void;
 }
 
+export type FormErrors = {
+  username?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  dob?: string;
+  ssn?: string;
+  password?: string;
+  cardNumber?: string;
+  cardExpiry?: string;
+  cardCVC?: string;
+};
+
+export type FormData = {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  ssn: string;
+  password: string;
+  membership: "REGULAR" | "GOLD";
+  cardNumber: string;
+  cardExpiry: string;
+  cardCVC: string;
+};
+
 export interface EditableFieldProps {
   value: string;
   onSave: (fieldName: string, value: string) => void;
