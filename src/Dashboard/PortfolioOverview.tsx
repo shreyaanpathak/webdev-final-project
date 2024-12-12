@@ -196,9 +196,9 @@ export const PortfolioOverview = () => {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {/* Positions List */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="lg:col-span-2 space-y-5">
                     <h3 className="text-[#10B981] font-bold flex items-center gap-2">
                         <FaChartLine />
                         Current Positions

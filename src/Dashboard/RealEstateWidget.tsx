@@ -1,4 +1,3 @@
-// RealEstateWidget.tsx
 import { motion } from "framer-motion";
 import { Line } from "react-chartjs-2";
 import { cardVariants } from "./constants";

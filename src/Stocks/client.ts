@@ -58,6 +58,7 @@ export interface OptionTradeResponse {
   total_value: number;
 }
 
+
 export const executeOptionTrade = async (
   userId: string,
   symbol: string,
@@ -239,5 +240,104 @@ export const searchStocks = async (query: string): Promise<SearchResponse> => {
   } catch (error) {
     console.error("Search failed:", error);
     return { results: [], count: 0 };
+  }
+};
+
+export const getChatAnalysis = async (prompt: string): Promise<string> => {
+  try {
+    console.log('Sending chat analysis request:', prompt.substring(0, 100) + '...');
+    
+    const response = await api.post('/chat/chat', {
+      message: prompt,
+      chat_history: []
+    });
+    
+    console.log('Received response:', response);
+    
+    if (response.data && response.data.response) {
+      return response.data.response;
+    }
+    
+    throw new Error('Invalid response format from chat API');
+  } catch (error) {
+    console.error('Failed to get AI analysis:', error);
+    console.error('Error details:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.detail || error.message || 'Failed to generate analysis');
+  }
+};
+
+export const getStockAnalysis = async (symbol: string, price: number, change: number, percentChange: number, metrics?: Record<string, number>, timeframe?: string) => {
+  try {
+    const response = await api.post('/chat/analyze/stock', {
+      symbol,
+      price,
+      change,
+      percentChange,
+      metrics,
+      timeframe
+    });
+    return response.data.analysis;
+  } catch (error) {
+    console.error('Failed to get stock analysis:', error);
+    throw error;
+  }
+};
+
+export const getMarketAnalysis = async (indices: Record<string, number>, trends: string[], timeframe?: string) => {
+  try {
+    const response = await api.post('/chat/analyze/market', {
+      indices,
+      trends,
+      timeframe
+    });
+    return response.data.analysis;
+  } catch (error) {
+    console.error('Failed to get market analysis:', error);
+    throw error;
+  }
+};
+
+export const getPortfolioAnalysis = async (holdings: Array<{symbol: string, value: number}>, totalValue: number, cashPosition: number, riskProfile?: string) => {
+  try {
+    const response = await api.post('/chat/analyze/portfolio', {
+      holdings,
+      total_value: totalValue,
+      cash_position: cashPosition,
+      risk_profile: riskProfile
+    });
+    return response.data.analysis;
+  } catch (error) {
+    console.error('Failed to get portfolio analysis:', error);
+    throw error;
+  }
+};
+
+export const getOptionsAnalysis = async (symbol: string, currentPrice: number, calls: any[], puts: any[]) => {
+  try {
+    const response = await api.post('/chat/analyze/options', {
+      symbol,
+      current_price: currentPrice,
+      calls,
+      puts
+    });
+    return response.data.analysis;
+  } catch (error) {
+    console.error('Failed to get options analysis:', error);
+    throw error;
+  }
+};
+
+export const getTradingSuggestion = async (symbol: string, currentPrice: number, indicators: Record<string, number>, timeframe?: string) => {
+  try {
+    const response = await api.post('/chat/trading/suggestion', {
+      symbol,
+      current_price: currentPrice,
+      indicators,
+      timeframe
+    });
+    return response.data.suggestion;
+  } catch (error) {
+    console.error('Failed to get trading suggestion:', error);
+    throw error;
   }
 };

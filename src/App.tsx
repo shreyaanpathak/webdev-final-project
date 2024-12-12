@@ -8,6 +8,7 @@ import FloatingParticles from './Home/FloatingParticles'
 import Stocks from "./Stocks/index"
 import Session from './Account/Session'
 import ProtectedRoute from './Account/ProtectedRoute'
+import Details from './Details/Details'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/Account/*" element={<Account />} />
             <Route path="/Stocks" element={<Stocks />} /> 
+            <Route path="/Stocks/:symbol" element={<Details />} /> 
             <Route path="/Dashboard" element={
               <ProtectedRoute>
                 <Dashboard />

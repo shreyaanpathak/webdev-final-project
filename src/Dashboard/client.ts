@@ -37,6 +37,42 @@ export interface PortfolioHistory {
   values: number[];
 }
 
+export interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatResponse {
+  response: string;
+}
+
+export interface Transaction {
+  id: string;
+  type: 'BUY' | 'SELL';
+  symbol: string;
+  amount: number;
+  quantity: number;
+  date: string;
+  price?: number;
+  option_type?: 'CALL' | 'PUT';
+  strike?: number;
+  premium?: number;
+  expiration?: string;
+}
+
+export const getTransactions = async (userId: string): Promise<Transaction[]> => {
+  try {
+    console.log('Fetching transactions for user:', userId);
+    const response = await api.get<Transaction[]>(`/stocks/transactions/${userId}`);
+    console.log('Transactions response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch transactions:", error);
+    console.error("Error details:", error.response?.data);
+    throw error;
+  }
+};
+
 // API Functions
 export const getPortfolio = async (userId: string): Promise<PortfolioData> => {
   try {

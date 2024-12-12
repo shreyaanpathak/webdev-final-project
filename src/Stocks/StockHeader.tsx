@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setSelectedStock, updateQuote } from "./stockReducer";
 import { useState, useEffect, useCallback } from "react";
 import * as client from "./client";
+import { useNavigate } from "react-router";
 
 interface SearchResult {
   symbol: string;
@@ -69,6 +70,7 @@ const MarketStatus = ({ marketStatus }: { marketStatus: string }) => (
 
 export const StockHeader = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -145,6 +147,7 @@ export const StockHeader = () => {
         dispatch(updateQuote(quote));
         setSearchQuery("");
         setShowSearchResults(false);
+        navigate(`/Stocks/${symbol}`);
       }
     } catch (err) {
       console.error("Selection failed:", err);
