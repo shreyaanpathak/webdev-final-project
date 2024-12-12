@@ -1,29 +1,35 @@
-// Session.tsx  
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { setCurrentUser } from "./reducer";
 import * as client from "./client";
 
 export default function Session({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchCurrentUser = async () => {
+  const checkAuthStatus = async () => {
     try {
-      if (currentUser?._id) {
-        const user = await client.profile(currentUser._id);
-        if (user) {
-          dispatch(setCurrentUser(user));
-        }
+      const user = await client.checkSession();
+      if (user) {
+        dispatch(setCurrentUser(user));
+      } else {
+        dispatch(setCurrentUser(null));
       }
     } catch (err) {
       console.error("Session check failed:", err);
+      dispatch(setCurrentUser(null));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCurrentUser();
-  }, [currentUser?._id]);
+    checkAuthStatus();
+  }, []);
+
+  if (isLoading) {
+    return null; // Or a loading spinner
+  }
 
   return <>{children}</>;
 }

@@ -45,7 +45,7 @@ export const GoalTracking = () => {
         },
         {
             id: "3",
-            name: "House Down Payment",
+            name: "Down Payment",
             current: 40000,
             target: 100000,
             percentage: 40,

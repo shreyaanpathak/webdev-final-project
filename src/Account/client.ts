@@ -1,4 +1,4 @@
-import { api } from "../config";
+import { api } from "./config";
 
 export const signin = async (credentials: { username: string; password: string }) => {
   try {
@@ -12,19 +12,28 @@ export const signin = async (credentials: { username: string; password: string }
   }
 };
 
-export const signup = async (userData) => {
-  const response = await api.post("/auth/signup", userData);
-  return response.data;
+export const signout = async () => {
+  try {
+    const response = await api.get("/auth/signout");
+    return response.data;
+  } catch (error) {
+    console.error("Signout error:", error);
+    throw error;
+  }
 };
 
-export const signout = async () => {
-  const response = await api.get("/auth/signout");
-  return response.data;
+export const checkSession = async () => {
+  try {
+    const response = await api.get("/auth/check-session");
+    return response.data;
+  } catch (error) {
+    return null;
+  }
 };
 
 export const profile = async (userId: string) => {
   try {
-    const response = await api.get(`/auth/profile/${userId}`); // Removed extra 'api'
+    const response = await api.get(`/auth/profile/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch profile:", error);
