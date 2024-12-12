@@ -17,7 +17,7 @@ export default function Signin() {
           dispatch(setLoading(true));
           const user = await client.signin(credentials);
           dispatch(setCurrentUser(user));
-          navigate("/dashboard");
+          navigate("/Dashboard");
       } catch (err: any) {
           console.error("Login error:", err);
           dispatch(setError(err.message || "Login failed"));
