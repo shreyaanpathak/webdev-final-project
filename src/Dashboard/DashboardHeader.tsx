@@ -59,7 +59,7 @@ export const DashboardHeader = () => {
             <div>
               <div className="text-[#10B981] text-sm font-medium">Total Cash Balance</div>
               <div className="text-white text-lg font-bold mt-1">
-                {`$${currentUser.cash}`}
+                {`$${Math.floor(currentUser.cash)}`}
               </div>
             </div>
           </motion.div>

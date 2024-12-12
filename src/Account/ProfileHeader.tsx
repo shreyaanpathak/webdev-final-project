@@ -11,12 +11,7 @@ import {
 } from "react-icons/fa";
 import { EditableField } from "./EditableField";
 import { Link } from "react-router-dom";
-
-interface ProfileHeaderProps {
-  profileData: any;
-  onSave?: (fieldName: string, value: any) => void;
-  isOwnProfile: boolean;
-}
+import { ProfileHeaderProps } from "./client";
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   profileData,

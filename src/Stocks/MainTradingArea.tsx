@@ -8,30 +8,8 @@ import { cardVariants } from "./constants/index";
 import { TradePanel } from "./TradePanel";
 import { updateQuote } from "./stockReducer";
 import * as client from "./client";
+import { QuoteData, MetricCardProps, MainTradingAreaProps } from "./client";
 import { RootState } from "../store";
-
-interface QuoteData {
-  symbol: string;
-  price: number;
-  change: number;
-  percentChange: number;
-  high: number;
-  low: number;
-  volume: number;
-  latest_trading_day: string;
-}
-
-interface MetricCardProps {
-  title: string;
-  value: string | number | undefined;
-}
-
-interface MainTradingAreaProps {
-  selectedStock: string | null;
-  quotes: Record<string, QuoteData>;
-  watchlist: string[];
-  loading?: boolean;
-}
 
 const MetricCard = ({ title, value }: MetricCardProps) => (
   <div className="bg-[#0D1F17] p-4 rounded-lg border border-[#10B981]/20">

@@ -7,11 +7,20 @@ export interface QuoteData {
   percentChange: number;
   high: number;
   low: number;
-  volume?: number;
-  latest_trading_day?: string;
-  name?: string;
-  currency?: string;
-  marketCap?: number;
+  volume: number;
+  latest_trading_day: string;
+}
+
+export interface MetricCardProps {
+  title: string;
+  value: string | number | undefined;
+}
+
+export interface MainTradingAreaProps {
+  selectedStock: string | null;
+  quotes: Record<string, QuoteData>;
+  watchlist: string[];
+  loading?: boolean;
 }
 
 export interface OptionTrade {

@@ -1,5 +1,42 @@
 import { api } from "./config";
 
+export interface ContactInfo {
+  email: string;
+  phone: string;
+  location: string;
+  availability: string;
+  office: string;
+}
+
+export interface ContactSectionProps {
+  info: ContactInfo;
+  onSave: (fieldName: string, value: string) => void;
+}
+
+export interface EditableFieldProps {
+  value: string;
+  onSave: (fieldName: string, value: string) => void;
+  fieldName: string;
+  className?: string;
+}
+
+export interface ProfileHeaderProps {
+  profileData: any;
+  onSave?: (fieldName: string, value: any) => void;
+  isOwnProfile: boolean;
+}
+
+export interface UserCardProps {
+  user: {
+    _id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    membership: string;
+  };
+}
+
 export const signin = async (credentials: { username: string; password: string }) => {
   try {
     const response = await api.post("/auth/signin", credentials);

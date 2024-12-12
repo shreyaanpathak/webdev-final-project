@@ -1,17 +1,6 @@
-// components/UserCard.tsx
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
-interface UserCardProps {
-  user: {
-    _id: string;
-    username: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    membership: string;
-  };
-}
+import { UserCardProps } from "./client";
 
 export const UserCard: React.FC<UserCardProps> = ({ user }) => (
   <motion.div

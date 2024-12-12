@@ -241,6 +241,7 @@ export const StockHeader = () => {
             )}
           </AnimatePresence>
         </div>
+        </div>
 
         {/* Title Section */}
         <div className="lg:w-[40%] flex flex-col items-center justify-center">
