@@ -126,7 +126,7 @@ export const PerformanceMetrics = () => {
                 </div>
             </div>
             
-            <div className="h-[650px] relative">
+            <div className="h-[540px] relative">
                 {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#141414]/50 backdrop-blur-sm">
                         <div className="text-[#10B981]">Loading...</div>

@@ -1,5 +1,6 @@
 // Modified index.tsx
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import "./chartSetup";
 import { DashboardHeader } from "./DashboardHeader";
 import { PortfolioOverview } from "./PortfolioOverview";
@@ -12,8 +13,13 @@ import { RealEstateWidget } from "./RealEstateWidget";
 import { MarketResearch } from "./MarketResearch";
 import { Tab } from '@headlessui/react';
 import { motion } from "framer-motion";
+import type { RootState } from "../store";
+import { IoMdLock } from "react-icons/io";
+
 
 export default function Dashboard() {
+    const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+    const isRegular = currentUser?.membership === 'REGULAR';
     return (
         <div className="min-h-screen bg-[#0A0A0A] flex flex-col">
             <DashboardHeader />
@@ -31,22 +37,32 @@ export default function Dashboard() {
                             }>
                                 Overview
                             </Tab>
-                            <Tab className={({ selected }) =>
-                                `px-4 py-2 rounded-lg font-medium transition-all duration-200
+                            <Tab disabled={isRegular} className={({ selected }) =>
+                                `px-3 py-2 rounded-lg font-medium transition-all duration-200
                                 ${selected 
                                     ? 'bg-[#10B981] text-white'
                                     : 'text-[#10B981] hover:bg-[#10B981]/10'
-                                }`
+                                }
+                                ${
+                                    isRegular && 'bg-app-gold-dark text-[#141414] hover:bg-[#ab7c02]'
+                                }
+                                `
                             }>
+                                <IoMdLock className="inline-block text-2xl pb-1 mr-1" />
                                 Transactions & Analytics
                             </Tab>
-                            <Tab className={({ selected }) =>
-                                `px-4 py-2 rounded-lg font-medium transition-all duration-200
+                            <Tab disabled={isRegular} className={({ selected }) =>
+                                `px-3 py-2 rounded-lg font-medium transition-all duration-200
                                 ${selected 
                                     ? 'bg-[#10B981] text-white'
                                     : 'text-[#10B981] hover:bg-[#10B981]/10'
-                                }`
+                                }
+                                ${
+                                    isRegular && 'bg-app-gold-dark text-[#141414] hover:bg-[#ab7c02]'
+                                }
+                                `
                             }>
+                                <IoMdLock className="inline-block text-2xl pb-1 mr-1" />
                                 Market & Real Estate
                             </Tab>
                         </Tab.List>
