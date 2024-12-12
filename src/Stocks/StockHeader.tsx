@@ -76,6 +76,7 @@ const DowIndex = ({ dowIndex }) => {
   );
 };
 
+
 const MarketStatus = ({ marketStatus }) => (
   <InfoBox
     title="Market Status"
