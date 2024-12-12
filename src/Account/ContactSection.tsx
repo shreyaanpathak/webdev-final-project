@@ -1,19 +1,8 @@
 import { motion } from "framer-motion";
 import { FaEnvelope, FaPhone, FaMapMarker, FaClock, FaCalendar } from "react-icons/fa";
 import { EditableField } from "./EditableField";
+import {ContactSectionProps} from "./client"
 
-interface ContactInfo {
-  email: string;
-  phone: string;
-  location: string;
-  availability: string;
-  office: string;
-}
-
-interface ContactSectionProps {
-  info: ContactInfo;
-  onSave: (fieldName: string, value: string) => void;
-}
 
 export const ContactSection: React.FC<ContactSectionProps> = ({ info, onSave }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

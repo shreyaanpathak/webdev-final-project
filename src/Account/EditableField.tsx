@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { EditableFieldProps } from './client';
 
-interface EditableFieldProps {
-  value: string;
-  onSave: (fieldName: string, value: string) => void;
-  fieldName: string;
-  className?: string;
-}
 
 export const EditableField: React.FC<EditableFieldProps> = ({ 
   value, 
